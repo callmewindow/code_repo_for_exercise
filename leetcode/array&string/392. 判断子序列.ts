@@ -10,7 +10,7 @@ function isSubsequence(s: string, t: string): boolean {
 };
 
 // 动态规划，最长公共子字符串
-function isSubsequence(s: string, t: string): boolean {
+function isSubsequence_1(s: string, t: string): boolean {
   // 动态规划，最长公共子字符串
   let sL = s.length;
   let tL = t.length;

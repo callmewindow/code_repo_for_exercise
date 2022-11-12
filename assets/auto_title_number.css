@@ -7,14 +7,14 @@ h2 {
 h3 {
   counter-reset: h4cnt;
 }
-/* h4 {
+h4 {
   counter-reset: h5cnt;
-} */
-/* h5 {
+}
+h5 {
   counter-reset: h6cnt;
-} */
-/* h6 {
-} */
+}
+h6 {
+}
 h2:before {
   counter-increment: h2cnt;
   content: counter(h2cnt) ". ";
@@ -27,13 +27,13 @@ h4:before {
   counter-increment: h4cnt;
   content: counter(h2cnt) "." counter(h3cnt) "." counter(h4cnt) ". ";
 }
-/* h5:before {
+h5:before {
   counter-increment: h5cnt;
   content: counter(h2cnt) "." counter(h3cnt) "." counter(h4cnt) "."
     counter(h5cnt) ". ";
-} */
-/* h6:before {
+}
+h6:before {
   counter-increment: h6cnt;
   content: counter(h2cnt) "." counter(h3cnt) "." counter(h4cnt) "."
     counter(h5cnt) "." counter(h6cnt) ". ";
-} */
+}
