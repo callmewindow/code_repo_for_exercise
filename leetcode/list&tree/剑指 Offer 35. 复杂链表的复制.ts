@@ -4,19 +4,19 @@
  * @param {Node} head
  * @return {Node}
  */
- var copyRandomList = function(head) {
-  if(head == null) return;
+var copyRandomList = function (head) {
+  if (head == null) return;
   // 处理null的情况，需要两层数组
   let nodeMap = new Map([[null, null]])
   let cur = head;
-  while(cur != null){
+  while (cur != null) {
     let newCur = new Node(cur.val);
     // 保存节点对应关系
     nodeMap.set(cur, newCur);
     cur = cur.next;
   }
   cur = head;
-  while(cur != null){
+  while (cur != null) {
     // 完善next和random搭建对应关系
     let newCur = nodeMap.get(cur);
     newCur.next = nodeMap.get(cur.next);
@@ -31,10 +31,10 @@
  * @param {Node} head
  * @return {Node}
  */
- var copyRandomList = function(head) {
-  if(head == null) return head;
+var copyRandomList_1 = function (head) {
+  if (head == null) return head;
   let cur = head;
-  while(cur != null){
+  while (cur != null) {
     // 将新的cur插入到cur的下一个
     let newCur = new Node(cur.val);
     newCur.next = cur.next;
@@ -44,7 +44,7 @@
   // 此时结构为：1,n1,2,n2,,,
   cur = head;
   // 先插入random，否则next没了
-  while(cur != null){
+  while (cur != null) {
     // 新节点的random就等于旧节点的random的下一个，即新节点，null就是null
     cur.next.random = cur.random == null ? null : cur.random.next;
     cur = cur.next.next;
@@ -54,10 +54,10 @@
   // 注意最后head还需要恢复回去
   let res = head.next;
   // 再拆分next
-  while(cur != null){
+  while (cur != null) {
     // 结尾退出，cur为后面的那个，所以判断cur
     // 此时head位于结尾的1，但结尾1的next应该是null，现在是新节点，所以需要手动调整next
-    if(cur.next == null){
+    if (cur.next == null) {
       head.next = null;
       break;
     }

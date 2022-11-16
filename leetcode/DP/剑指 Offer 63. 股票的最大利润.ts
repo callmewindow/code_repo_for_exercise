@@ -12,7 +12,7 @@ function maxProfit(prices: number[]): number {
 };
 
 // 动态规划硬dp，用k次交易的解法解答1次交易！
-function maxProfit(prices: number[]): number {
+function maxProfit_1(prices: number[]): number {
     let n = prices.length;
     // 如果天数小于2则不可能完成交易，直接退出
     if(n < 2) return 0;

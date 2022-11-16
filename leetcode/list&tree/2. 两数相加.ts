@@ -6,18 +6,18 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
   // 临时保存头节点
   let res = lSum;
   // 都是null才退出
-  while(l1 != null && l2 != null){
+  while (l1 != null && l2 != null) {
     const sum = l1.val + l2.val;
-    if(sum >= 10){
+    if (sum >= 10) {
       lSum.val = sum - 10;
       // 将多的1加到l1上，l1下一个可能是null，所以需要判断
-      if(l1.next == null) l1.next = new ListNode(1);
+      if (l1.next == null) l1.next = new ListNode(1);
       else l1.next.val += 1;
-    }else{
+    } else {
       lSum.val = sum;
     }
     // 只有当后面有需要添加的值时才新建
-    if(l1.next != null || l2.next != null)
+    if (l1.next != null || l2.next != null)
       lSum.next = new ListNode()
 
     lSum = lSum.next;
@@ -26,19 +26,19 @@ function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | nul
   }
   let ll = l1 != null ? l1 : l2;
   // 把l1和l2多的值加上
-  while(ll != null){
+  while (ll != null) {
     // 这里也需要判断val，因为可能为10
     const sum = ll.val;
-    if(sum >= 10){
+    if (sum >= 10) {
       lSum.val = sum - 10;
       // 将多的1加到l1上，l1下一个可能是null，所以需要判断
-      if(ll.next == null) ll.next = new ListNode(1);
+      if (ll.next == null) ll.next = new ListNode(1);
       else ll.next.val += 1;
-    }else{
+    } else {
       lSum.val = sum;
     }
     // 防止末尾多一个空节点，所以判断next
-    if(ll.next != null)
+    if (ll.next != null)
       lSum.next = new ListNode();
     lSum = lSum.next;
     ll = ll.next;
