@@ -1,7 +1,7 @@
 // https://leetcode.cn/problems/ba-shu-zi-fan-yi-cheng-zi-fu-chuan-lcof
 // 分别记录和不合并的情况做处理
 function checkMerge(ch1: string, ch2: string): boolean {
-  return ch1 == '1' || (ch1 == '2' && Number(ch2) <= 5)
+  return ch1 == '1' || (ch1 == '2' && Number(ch2) <= 5) // 可以直接比较字符
 }
 function translateNum(num: number): number {
   // 可能有多种情况的有：1x，2x，可以拆分为1和x，进而再递归
@@ -18,9 +18,7 @@ function translateNum(num: number): number {
 
   // 两个状态，一个是自己当作一个数处理，一个是自己和后面的一个数绑定起来进行可能性的计算
   let transNum = Array(nLen).fill(0)
-    .map(
-      () => Array(2).fill(0)
-    );
+    .map(() => Array(2).fill(0));
   // 初始化边界值
   // 最右一个数肯定只有一种情况
   transNum[nLen - 1] = [1, 0];

@@ -15,7 +15,7 @@ function checkSwapCnt_node(nodes: TreeNode[], nums: number[]): [TreeNode[], numb
       if (i == 0) return nMap.get(sortNums[i]) + 1;
       else return nMap.get(sortNums[i]) - nMap.get(sortNums[i - 1]);
     });
-  console.log(nMap)
+  console.log(nMap);
   console.log(nCnt);
   for (let i = 0; i < numL; i++) {
     if (nums[i] == sortNums[i]) continue;
@@ -35,6 +35,7 @@ function checkSwapCnt_node(nodes: TreeNode[], nums: number[]): [TreeNode[], numb
   return [nodes, cnt];
 }
 
+// 正常的检查交换数量
 function checkSwapCnt(nums: number[]): number {
   let cnt = 0;
   if (nums.length <= 1) return cnt;
@@ -66,9 +67,10 @@ function checkSwapCnt(nums: number[]): number {
   return cnt;
 }
 function minimumOperations(root: TreeNode | null): number {
+  if (!root) return 0;
   // 分层bfs，记录总节点和下一层的节点
-  let nodeQ = [], tmpQ = [];
-  let tmpV = [];
+  let nodeQ: TreeNode[] = [], tmpQ: TreeNode[] = [];
+  let tmpV: number[] = [];
   let swapCnt = 0, cnt = 0;
   nodeQ.push(root);
   while (nodeQ.length != 0) {

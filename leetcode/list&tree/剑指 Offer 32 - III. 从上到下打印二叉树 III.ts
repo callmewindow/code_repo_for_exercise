@@ -2,7 +2,7 @@
 // 强行反转某一层，比较朴实无华
 let valList = [];
 
-function setMatrix(root: TreeNode | null, depth: number): void {
+function setMatrix_1(root: TreeNode | null, depth: number): void {
   if (root == null) return;
   // 第一次遍历该层需新增
   if (valList.length <= depth) {
@@ -18,7 +18,7 @@ function levelOrder_4(root: TreeNode | null): number[][] {
   // 全局需变空，因为是多次调用
   valList = [];
   // 默认从左到右
-  setMatrix(root, 0);
+  setMatrix_1(root, 0);
   let i = 0;
   while (i < valList.length) {
     // 直接反转某一层
@@ -34,10 +34,10 @@ function levelOrder_4(root: TreeNode | null): number[][] {
 // 基于队列和奇偶判断，用索引调整读取顺序
 function levelOrder_5(root: TreeNode | null): number[][] {
   if (root == null) return [];
-  let nodeQueue = [];
-  let valList = [];
+  let nodeQueue: TreeNode[] = [];
+  let valList: number[][] = [];
   nodeQueue.push(root);
-  let tmpValList = [];
+  let tmpValList: number[] = [];
   while (nodeQueue.length > 0) {
     tmpValList = [];
     const nodeLen = nodeQueue.length;
@@ -69,11 +69,11 @@ function levelOrder_5(root: TreeNode | null): number[][] {
 // 通过插入值的顺序实现反转，读取可以按顺序，插入可以反序
 function levelOrder_6(root: TreeNode | null): number[][] {
   if (root == null) return [];
-  let nodeQueue = [];
-  let valList = [];
+  let nodeQueue: TreeNode[] = [];
+  let valList: number[][] = [];
   nodeQueue.push(root);
   // tmp用于记录某一层的节点
-  let tmpValList = [];
+  let tmpValList: number[] = [];
   while (nodeQueue.length > 0) {
     // 只对目前node存在的节点进行遍历，node中的节点均位于一层
     tmpValList = [];

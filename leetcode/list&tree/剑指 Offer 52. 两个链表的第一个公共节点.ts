@@ -35,7 +35,7 @@ var getIntersectionNode = function (headA, headB) {
 };
 
 // n2时间解决，硬遍历
-var getIntersectionNode = function (headA, headB) {
+var getIntersectionNode_1 = function (headA, headB) {
   // 链表和数组不同，节点是一个指向的关系，如果是同一个节点，则存储是相同的
   // 如果出现了公共节点，就应该是可以直接判断相等的，即可以=
   // 普通方法即两轮遍历
@@ -55,7 +55,7 @@ var getIntersectionNode = function (headA, headB) {
 };
 
 // 数组存储，两次遍历的时间解决
-var getIntersectionNode_1 = function (headA, headB) {
+var getIntersectionNode_2 = function (headA, headB) {
   // 链表和数组不同，节点是一个指向的关系，如果是同一个节点，则存储是相同的
   // 如果出现了公共节点，就应该是可以直接判断相等的，即可以=
   // 如果n时间复杂度，可利用数组存储A的节点然后比较
@@ -73,8 +73,8 @@ var getIntersectionNode_1 = function (headA, headB) {
 };
 
 // set判断是否存在更快，可以o(1)判断是否有
-var getIntersectionNode = function (headA, headB) {
-  let nodeA = new Set()
+var getIntersectionNode_3 = function (headA, headB) {
+  let nodeA: Set<Node> = new Set()
   while (headA != null) {
     nodeA.add(headA);
     headA = headA.next;

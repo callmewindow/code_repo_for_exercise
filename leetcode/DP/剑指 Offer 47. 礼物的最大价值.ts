@@ -9,7 +9,7 @@ function maxValue(grid: number[][]): number {
     let t = 0, l = 0;
     for (let y = 0; y < col; y++) {
       // 这里其实不会对grid多次遍历，因此直接在grid上操作即可
-      // 这里判断x-1即可，因为如果x-1不存在尝试索引会报错
+      // 这里判断x-1，因为如果x-1可能不存在，此时尝试y会报错
       t = grid[x - 1] ? grid[x - 1][y] : 0;
       l = grid[x][y - 1] ? grid[x][y - 1] : 0;
       grid[x][y] = grid[x][y] + Math.max(t, l);

@@ -5,7 +5,7 @@ function isSubStructure(A: TreeNode | null, B: TreeNode | null): boolean {
   if (A == null || B == null) return false;
   // 单纯的bfs和dfs均无法处理多节点的情况
   // 可以将A和B填为满二叉树再判断，跳过缺失部分直接判断
-  let nodeQ = [];
+  let nodeQ: TreeNode[] = [];
   let valDFSA = [], valDFSB = [];
   // 记录真值和假值的辅助数组
   let helpA: boolean[] = [], helpB: boolean[] = [];

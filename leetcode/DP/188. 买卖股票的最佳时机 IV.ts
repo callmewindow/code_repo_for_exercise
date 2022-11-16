@@ -7,13 +7,9 @@ function maxProfit_0(k: number, prices: number[]): number {
   if (n < 2 || dealCnt == 0) return 0;
 
   // 注意dealcnt要+1，对应0次交易的边界值
-  let earn: number[][][] = Array(n)
-    .fill(0)
-    .map(
-      () => Array(dealCnt + 1)
-        .fill(0)
-        .map(() => Array(3).fill(0))
-    );
+  let earn: number[][][] = Array(n).fill(0)
+    .map(() => Array(dealCnt + 1).fill(0)
+      .map(() => Array(3).fill(0)));
 
   // 根据交易次数更新盈利
   for (let i = 1; i < n; i++) {
@@ -33,9 +29,8 @@ function maxProfit_0(k: number, prices: number[]): number {
   }
   // console.log(earn)
 
-  let earnMax = Math.max(...earn.map(
-    (day) => Math.max(...day.map(
-      (deal) => Math.max(...deal)
-    ))));
+  let earnMax = Math.max(...earn
+    .map((day) => Math.max(...day
+      .map((deal) => Math.max(...deal)))));
   return earnMax > 0 ? earnMax : 0;
 };

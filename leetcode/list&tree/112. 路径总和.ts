@@ -25,5 +25,5 @@ function hasPathSum_1(root: TreeNode | null, targetSum: number): boolean {
   if (root.left == null && root.right == null) return root.val == targetSum
   // 如果根节点+左或者+右符合也可以，不需要判断是否null，因为函数会处理
   const newTarget = targetSum - root.val;
-  return hasPathSum(root.left, newTarget) || hasPathSum(root.right, newTarget);
+  return hasPathSum_1(root.left, newTarget) || hasPathSum_1(root.right, newTarget);
 };

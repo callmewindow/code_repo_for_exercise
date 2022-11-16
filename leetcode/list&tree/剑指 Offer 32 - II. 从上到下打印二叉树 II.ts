@@ -1,6 +1,6 @@
 // https://leetcode.cn/problems/cong-shang-dao-xia-da-yin-er-cha-shu-ii-lcof/
 // 使用全局变量记录各层情况进行解决
-let valList = [];
+let valList: number[][] = [];
 
 function setMatrix(root: TreeNode | null, depth: number): void {
   if (root == null) return;
@@ -24,11 +24,11 @@ function levelOrder_2(root: TreeNode | null): number[][] {
 // 基于每层节点数量实现分层
 function levelOrder_3(root: TreeNode | null): number[][] {
   if (root == null) return [];
-  let nodeQueue = [];
-  let valList = [];
+  let nodeQueue: TreeNode[] = [];
+  let valList: number[][] = [];
   nodeQueue.push(root);
   // tmp用于记录某一层的节点
-  let tmpValList = [];
+  let tmpValList: number[] = [];
   while (nodeQueue.length > 0) {
     // 只对目前node存在的节点进行遍历，node中的节点均位于一层
     tmpValList = [];

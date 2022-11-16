@@ -10,7 +10,6 @@ function isIdealPermutation(nums: number[]): boolean {
   for (let i = 0; i < nL - 2; i++)
     for (let j = i + 2; j < nL; j++) // 跳过临近直接看
       if (nums[i] > nums[j]) return false;
-
   return true;
 };
 

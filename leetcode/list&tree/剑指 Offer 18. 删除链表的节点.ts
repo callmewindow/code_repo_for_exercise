@@ -3,7 +3,8 @@
 function deleteNode(head: ListNode | null, val: number): ListNode | null {
   if (head == null) return null;
   if (head.val == val) return head.next;
-  let headTmp = head;
+
+  let headTmp: ListNode | null = head;
   while (headTmp != null) {
     if (headTmp.next != null && headTmp.next.val == val) {
       // 直接跳过

@@ -8,10 +8,12 @@ function isSymmetric(root: TreeNode | null): boolean {
   // 要么全空要么全有
   if (leftN == null && rightN == null) return true;
   if (leftN == null || rightN == null) return false;
+
   let leftQ: TreeNode[] = [], rightQ: TreeNode[] = [];
   leftQ.push(leftN);
   rightQ.push(rightN);
   let tmpN: TreeNode;
+
   while (leftQ.length > 0 && rightQ.length > 0) {
     // 同步处理左右，判断值是否相等
     tmpN = leftQ.shift();

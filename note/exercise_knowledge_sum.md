@@ -16,8 +16,26 @@
 如果不符合或者没有定义则可能会报错提示
 声明子元素的类型：
 
-1. matrix: number[][]，将基于脚标获取的形式作为类型定义即可
-2. park_max: Array<number>，使用尖括号也可以声明，但是不能和前者混用
+```typescript
+// 在元素类型后面加上[]
+let arr: number[] = [1, 2];
+
+// 或者使用数组泛型
+let arr: Array<number> = [1, 2];
+// 注意对于复杂类型，只能使用泛型来定义类型，如下
+let nodeA: Set<Node> = new Set();
+```
+
+对于可能是多种类型值的变量，可以声明 any，这样不会报错，但是最好的方法还是在定义时用或来进行标记
+
+如果要声明多类型变量，只需加上或即可
+如果要声明一个多类型的数组，则需要借助括号来同时起作用，示例如下
+
+```typescript
+let root: Node | null;
+let nodeList: (Node | null)[];
+let nodeList2: Array<Node | null>;
+```
 
 ##### 空格和缩进
 
@@ -67,20 +85,53 @@ i++; // 返回值还是i
 i += 1; // 不返回i
 ```
 
-一般情况下++i，--i更加好用，因为可以直接返回变化后的值，进而进行一些处理，不需要再去获取判断
-当需要i从0-n时可以i++，当需要从1-n时，++i更加好用
+一般情况下++i，--i 更加好用，因为可以直接返回变化后的值，进而进行一些处理，不需要再去获取判断
+当需要 i 从 0-n 时可以 i++，当需要从 1-n 时，++i 更加好用
 
 #### 常见值
 
-##### 无值
+##### 无值 / 空值
 
 1. null
-   空，常见于链表，树等节点所在的地方，用 null 来表示结尾
+   空，表示 "什么都没有"。
+   null 是一个只有一个值的特殊类型。表示一个空对象引用,用 typeof 检测 null 返回是 object。
+   常见于链表，树等节点所在的地方，用 null 来表示结尾
 
 2. undefined
-   未定义，常见于 map.get 等函数，当尝试获取某个值时，如果存在会返回对应值，否则会返回 undefined
+   未定义，是一个没有设置值的变量,typeof 一个没有值的变量会返回 undefined。
+   常见于 map.get 等函数，当尝试获取某个值时，如果存在会返回对应值，否则会返回 undefined
    对应函数：
    map.get, arr.shift(), arr.pop()
+
+Null 和 Undefined 是其他任何类型（包括 void）的子类型，可以赋值给其它类型，如数字类型，此时，赋值后的类型会变成 null 或 undefined。
+
+当变量为 null 或 undefined 的时候，直接判断它得到的一定是 false，基于这个性质可以减少很多的判断，示例如下：
+
+```typescript
+let a = undefined;
+if (a) console.log(2);
+if (!a) console.log(1);
+// 输出1
+// 令人震惊的是，如果直接比较null和undefined，他们是相同的，会是true
+console.log(null == undefined);
+```
+
+而在 TypeScript 中启用严格的空校验（--strictNullChecks）特性，就可以使得 null 和 undefined 只能被赋值给 void 或本身对应的类型，示例代码如下：
+
+```typescript
+// 启用 --strictNullChecks
+let x: number;
+x = 1; // 编译正确
+x = undefined; // 编译错误
+x = null; // 编译错误
+// 上面的例子中变量 x 只能是数字类型。如果一个类型可能出现 null 或 undefined， 可以用 | 来支持多种类型，示例代码如下：
+
+// 启用 --strictNullChecks
+let x: number | null | undefined;
+x = 1; // 编译正确
+x = undefined; // 编译正确
+x = null; // 编译正确
+```
 
 ##### 极限值
 
@@ -98,48 +149,224 @@ i += 1; // 不返回i
    对于数组此类高级数据结构，在传递到函数中时，实际传输的是一个引用，不会复制一份（太占时间空间）
    此时即使在函数中进行修改也会导致原变量的改变，示例如下
 
-```typescript
-function test(num: number[]): void {
-  num[0] = 0;
-}
-a = [1, 2, 3];
-test(a); // 此时a的第一位也会变成0
-```
-
-该性质可以利用，例如这种同步修改数组，可以实现函数间值的同步
-也可能导致问题，例如没有复制一份出来直接修改，导致原本传入函数的不想被修改的值发生改变
-
-因此需要注意
-
-### 各数据类型的利用
-
-#### 数值
-
-##### 整数
-
-1. normal
-
-   最普通的数值类型，只需直接声明为整数即可
-
-2. bigint
-
-   大数，范围超级大，大约为：？？？
-   声明时可通过在数值后加上字符 n 来声明
-
    ```typescript
-
+   function test(num: number[]): void {
+     num[0] = 0;
+   }
+   a = [1, 2, 3];
+   test(a); // 此时a的第一位也会变成0
    ```
 
-   但注意对于大数如果直接输出的话也会带着 n，因此需要使用 Number 等工具进行转化
-   同时大数也无法和普通数一起运算
+   该性质可以利用，例如这种同步修改数组，可以实现函数间值的同步
+   也可能导致问题，例如没有复制一份出来直接修改，导致原本传入函数的不想被修改的值发生改变
 
-###### 转化
+### 数据类型
+
+#### 基础类型
+
+下面对部分常用类型进行一些简要介绍和展示
+
+0. 任意 any
+
+   该类型的变量可以背赋予任何值，通常用于接收一些可能为 undefined 或者正常值的参数
+
+   任意值是 TypeScript 针对编程时类型不明确的变量使用的一种数据类型，它常用于以下三种情况。
+
+   1. 变量的值会动态改变时，比如来自用户的输入，任意值类型可以让这些变量跳过编译阶段的类型检查
+
+   ```typescript
+   let x: any = 1; // 数字类型
+   x = "I am who I am"; // 字符串类型
+   x = false; // 布尔类型
+   ```
+
+   2. 当需要在编译时选择的包含或移除类型检查时
+
+   ```typescript
+   let x: any = 4;
+   x.ifItExists(); // 正确，ifItExists方法在运行时可能存在，但这里并不会检查
+   x.toFixed(); // 正确
+   ```
+
+   3. 当需要定义存储多类型数据数组时
+
+   ```typescript
+   let arrayList: any[] = [1, false, "fine"];
+   arrayList[1] = 100;
+   ```
+
+1. 数字 number
+
+   最普通的数值类型，双精度 64 位浮点值，可以用来表示整数和分数。
+
+   > ts 和 js 都没有单独的整数类型，都是属于 number 的
+
+   ```typescript
+   let binaryLiteral: number = 0b1010; // 二进制
+   let octalLiteral: number = 0o744; // 八进制
+   let decLiteral: number = 6; // 十进制
+   let hexLiteral: number = 0xf00d; // 十六进制
+   ```
+
+2. 字符串 string
+
+   一个字符系列，使用单引号（'）或双引号（"）来表示字符串类型。反引号（`）来定义多行文本和内嵌表达式
+   具体可见后续 String 部分
+
+   ```typescript
+   let name: string = "Runoob";
+   let years: number = 5;
+   let words: string = `您好，今年是 ${name} 发布 ${years + 1} 周年`;
+   ```
+
+3. 元组 tuple
+
+   元组类型用来表示已知元素数量和类型的数组，各元素的类型不必相同，对应位置的类型需要相同。
+
+   常用于数据的交换，和临时或复杂的数据类型存储
+
+   ```typescript
+   let x: [string, number];
+   x = ["Runoob", 1]; // 运行正常
+   x = [1, "Runoob"]; // 报错
+   console.log(x[0]); // 输出 Runoob
+   ```
+
+4. 枚举 enum
+
+   可用于定义一个数值集合，可通过点运算符标记自己是哪个值
+
+   ```typescript
+   enum Color {
+     Red,
+     Green,
+     Blue,
+   }
+   let c: Color = Color.Green;
+
+   //默认情况下，从0开始为元素编号。 你也可以手动的指定成员的数值。
+   //例如，我们将上面的例子改成从 1开始编号：
+   enum Color {
+     Red = 1,
+     Green,
+     Blue,
+   }
+   let c: Color = Color.Green;
+
+   //或者，全部都采用手动赋值：
+
+   enum Color {
+     Red = 1,
+     Green = 2,
+     Blue = 4,
+   }
+   let c: Color = Color.Green;
+
+   //枚举类型提供的一个便利是你可以由枚举的值得到它的名字。
+   //例如，我们知道数值为2，但是不确定它映射到Color里的哪个名字，我们可以查找相应的名字：
+
+   enum Color {
+     Red = 1,
+     Green,
+     Blue,
+   }
+   let colorName: string = Color[2];
+
+   console.log(colorName); // 显示'Green'因为上面代码里它的值是2
+   ```
+
+   同时如果 A 的值是被计算出来的。注意注释部分，如果某个属性的值是计算出来的，那么它后面一位的成员必须要初始化值。
+
+   ```typescript
+   const getValue = () => {
+     return 0;
+   };
+
+   enum List {
+     A = getValue(),
+     B = 2, // 此处必须要初始化值，不然编译不通过
+     C,
+   }
+   console.log(List.A); // 0
+   console.log(List.B); // 2
+   console.log(List.C); // 3
+   ```
+
+5. 错误 never
+
+   never 是其它类型（包括 null 和 undefined）的子类型，代表从不会出现的值
+   意味着声明为 never 类型的变量只能被 never 类型所赋值，在函数中它通常表现为抛出异常或无法执行到终止点（例如无限循环）
+
+   一般在未指定变量类型，而直接尝试调用方法时会报错不能调用 never 类型的变量
+   例如：let a = []; a.push(1);就会报错
+
+   ```typescript
+   let x: never;
+   let y: number;
+
+   // 编译错误，数字类型不能转为 never 类型
+   x = 123;
+
+   // 运行正确，never 类型可以赋值给 never 类型
+   x = (() => {
+     throw new Error("exception");
+   })();
+
+   // 运行正确，never 类型可以赋值给 数字类型
+   y = (() => {
+     throw new Error("exception");
+   })();
+
+   // 返回值为 never 的函数可以是抛出异常的情况
+   function error(message: string): never {
+     throw new Error(message);
+   }
+
+   // 返回值为 never 的函数可以是无法被执行到的终止点的情况
+   function loop(): never {
+     while (true) {}
+   }
+   ```
+
+#### 特殊类型
+
+1. bigint
+
+大数，范围超级大，大约为：？？？
+声明时可通过在数值后加上字符 n 来声明
+
+```typescript
+let mod = 1000000007n; // 声明了大数范围的1e9+7
+// 计算需要类型一致，这里的num2定义时也需要带n，这类大数如果直接输出会带n字符
+let num2 = 1n;
+console.log(mod); // 1000000007n
+// 计算后为了去除n，需要用Number转化，注意如果不取模对大数强行转Number，可能由于溢出而会四舍五入截断导致数值不匹配
+Number(num2 % 1000000007n);
+```
+
+但注意对于大数如果直接输出的话也会带着 n，因此需要使用 Number 等工具进行转化
+同时大数也无法和普通数一起运算
+
+##### 科学计数法
+
+在 js 中可以通过 e 来实现乘 n 个 10 或者 n 个 0.1 的的情况，但是只有默认类型，无法和大数等类型匹配
+
+```typescript
+console.log(1.5e10);
+console.log(1e-4);
+console.log(1.2e-3);
+// 15000000000
+// 0.0001
+// 0.0012
+```
+
+对于大数只能
+
+##### 转化
 
 1. parseInt(str)
 
    通过传入数字字符串可返回转化为数字类型的数值
-
-##### 小数
 
 #### 数组 Array
 
@@ -159,34 +386,35 @@ let arr1 = new Array(5).fill(0);
 
 1. splice(start, cnt, item)
 
-   splice可以实现删除和增加，start为起始脚标，cnt为删除的数量，item为增加的元素
-   item需要和数组类型一致，对于数组可以使用...arr来实现批量加入，这里的加入是正序的
+   splice 可以实现删除和增加，start 为起始脚标，cnt 为删除的数量，item 为增加的元素
+   item 需要和数组类型一致，对于数组可以使用...arr 来实现批量加入，这里的加入是正序的
 
-   如果cnt<=0那么不会删除任何元素，返回值会变为空数组，如果>1，则会返回删除元素组成的数组
+   如果 cnt<=0 那么不会删除任何元素，返回值会变为空数组，如果>1，则会返回删除元素组成的数组
 
    ```typescript
    // 删除hello数组1脚标开始的2个元素后，插入4，5，6
-   let hello = [0,1,2,3,4]
-   console.log(hello.splice(1,2,...[4,5,6])) // 输出[1,2]，单纯增加元素只会返回空数组
+   let hello = [0, 1, 2, 3, 4];
+   console.log(hello.splice(1, 2, ...[4, 5, 6])); // 输出[1,2]，单纯增加元素只会返回空数组
    // hello:0,4,5,6,3,4
    // 注意加入元素的位置是对应着start的，即如果不删除直接加入，会把原本start位置的元素后移
-   let arr = [1,2,3]
-   arr.splice(1,0,4) // arr:[1,4,2,3]
+   let arr = [1, 2, 3];
+   arr.splice(1, 0, 4); // arr:[1,4,2,3]
    ```
 
-   如果第一个参数是-1，如果cnt>0，则必定会剔除最后一个元素，即使cnt>1也只会剔除一个，因为是从-1开始剔除
-   如果增加元素则是在原本最后一个的位置进行加入，即成为倒数第二个元素，脚标对应的仍然是旧len-1
+   如果第一个参数是-1，如果 cnt>0，则必定会剔除最后一个元素，即使 cnt>1 也只会剔除一个，因为是从-1 开始剔除
+   如果增加元素则是在原本最后一个的位置进行加入，即成为倒数第二个元素，脚标对应的仍然是旧 len-1
+
    ```typescript
-   let hello = [1,2,3]
-   hello.splice(-1,0,4)
-   console.log(hello) // [1,2,4,3]
+   let hello = [1, 2, 3];
+   hello.splice(-1, 0, 4);
+   console.log(hello); // [1,2,4,3]
    ```
 
 2. length
 
-   length不只可以用于获取精度，通过增减length可以实现对数组基于末尾的增加和减少
-   例如length-1会导致数组最后一个数据直接丢失，再+1也不会回来
-   length+1会在末尾生成一个空元素，undefined
+   length 不只可以用于获取精度，通过增减 length 可以实现对数组基于末尾的增加和减少
+   例如 length-1 会导致数组最后一个数据直接丢失，再+1 也不会回来
+   length+1 会在末尾生成一个空元素，undefined
 
 ###### 增加
 
@@ -205,10 +433,10 @@ let arr1 = new Array(5).fill(0);
    常用于数组的复制，复制后对新数组操作不会影响旧数组
 
    ```typescript
-   let arr = [0,1]
+   let arr = [0, 1];
    let newArr = arr.concat([2]);
    arr[1] = 2;
-   console.log(newArr) // 0,1,2
+   console.log(newArr); // 0,1,2
    ```
 
 ###### 减少
@@ -223,8 +451,8 @@ let arr1 = new Array(5).fill(0);
 
 3. delete
 
-   delete是一个关键字，在后面加入一个数组元素可以实现基于引用的清空
-   清除后会变成undefined
+   delete 是一个关键字，在后面加入一个数组元素可以实现基于引用的清空
+   清除后会变成 undefined
 
 ###### 变化
 
@@ -256,7 +484,7 @@ let arr1 = new Array(5).fill(0);
    ```
 
 3. map(func)
-   
+
    通过指定函数处理数组的每个元素，并返回处理后的数组
 
    映射，func 是一个可接收多个参数的函数，返回值代表基于当前值所得到的新值
@@ -269,6 +497,21 @@ let arr1 = new Array(5).fill(0);
    // sA是字符串数组，ch是字符串
    console.log(sA.map((ch) => ch + 1)); // 拼接了1的字符串
    console.log(sA.map((ch) => String.fromCharCode(ch.charCodeAt(0) + 1))); // ascii码+1的字符
+   ```
+
+   进阶可通过 map 结合 fill 来实现多维数组的初始化，示例如下：
+
+   ```typescript
+   // 注意map需要数组有值，因此需要先fill一个临时值再去map
+   let earn: number[][][] = Array(n)
+     .fill(0)
+     .map(() =>
+       Array(5)
+         .fill(0)
+         .map(() => Array(3).fill(0))
+     );
+   // earn是一个n*5*3的数组
+   // 如果不使用map还需要多层for循环遍历
    ```
 
 ##### 获取
@@ -289,61 +532,104 @@ let arr1 = new Array(5).fill(0);
 
    通过 of 可对数组内容进行依次获取
 
-2.	every(func)
+2. every(func)
 
-   检测数值元素的每个元素是否都符合条件。
+   检测数值元素的每个元素是否都符合条件
+
    ```typescript
-   function isBigEnough(element, index, array) { 
-         return (element >= 10); 
-   } 
-         
-   var passed = [12, 5, 8, 130, 44].every(isBigEnough); 
-   console.log("Test Value : " + passed ); // false
+   function isBigEnough(element, index, array) {
+     return element >= 10;
+   }
+
+   var passed = [12, 5, 8, 130, 44].every(isBigEnough);
+   console.log("Test Value : " + passed); // false
    ```
-3.	some(func)
+
+   every 函数同样可用于遍历数组，可以同时处理索引和值，但是推出方式比较奇怪，需要在匿名函数内返回 false，示例如下：
+
+   ```typescript
+   let nums1 = ["a", "b", "c"];
+   nums1.every((n_1, i_1, nums1) => {
+     console.log(n_1, i_1);
+     return true; // true表示循环继续，必须要有
+   });
+   // 按顺序输出a,1;b,2;c,3
+   ```
+
+3. some(func)
 
    检测数组元素中是否有元素符合指定条件。
+
    ```typescript
-   function isBigEnough(element, index, array) { 
-      return (element >= 10); 
-            
-   } 
-            
+   function isBigEnough(element, index, array) {
+     return element >= 10;
+   }
+
    var retval = [2, 5, 8, 1, 4].some(isBigEnough);
-   console.log("Returned value is : " + retval );  // false
-            
-   var retval = [12, 5, 8, 1, 4].some(isBigEnough); 
-   console.log("Returned value is : " + retval );  // true
+   console.log("Returned value is : " + retval); // false
+
+   var retval = [12, 5, 8, 1, 4].some(isBigEnough);
+   console.log("Returned value is : " + retval); // true
    ```
 
-4.	filter()
-   检测数值元素，并返回符合条件所有元素的数组。
+   4. filter()
+
+   检测元素，并返回符合条件所有元素的数组。
+
    ```typescript
-   function isBigEnough(element, index, array) { 
-      return (element >= 10); 
-   } 
-            
-   var passed = [12, 5, 8, 130, 44].filter(isBigEnough); 
-   console.log("Test Value : " + passed ); // 12,130,44
+   function isBigEnough(element, index, array) {
+     return element >= 10;
+   }
+
+   var passed = [12, 5, 8, 130, 44].filter(isBigEnough);
+   console.log("Test Value : " + passed); // 12,130,44
    ```
 
-5.	forEach()
+   5. forEach()
+
    数组每个元素都执行一次回调函数。
+
    ```typescript
    let num = [7, 8, 9];
    num.forEach(function (value) {
-      console.log(value);
-   }); 
+     console.log(value);
+   });
    ```
 
+   6. ES6 新方法：keys(),values(),entries()方法
 
+   这三个方法本质都是返回一个特殊的迭代器，迭代器有 next()方法，会按顺序返回遍历到的内容，示例如下：
+
+   ```typescript
+   // 获取迭代器，替换成key和value同理，只是value不同
+   let arrEntries = arr1.entries();
+   // 按顺序获取值
+   let entry = arrEntries.next();
+   // 如果已经遍历完了，next会返回一个done为true的值，以此为依据可暂停
+   while (!entry.done) {
+     console.log(entry.value); // value为迭代器的值
+     entry = arrEntries.next();
+   }
+   ```
+
+   keys()的迭代内容为键，在数组中即索引，从 0-n-1
+   values()的迭代内容为值，数组中即从第一位到最后一位的值
+   entries()的迭代内容为键和值组成的元组，即\[key,value\]
+
+   进而结合 for of 循环，便可以直接遍历的循环，下面以 entries 为例介绍 for of 结合迭代器的使用
+
+   ```typescript
+   let arrB = ["a", "b"];
+   for (let [iB, vB] of arrB.entries()) {
+     console.log(iB, vB); // [0,'a'],[1,'b']
+   }
+   ```
 
 ###### 计算
 
 1. reduce() / reduceRight()
 
-   
-   reduce将数组元素计算为一个值（从左到右）（reduceRight即从右到左，其他没区别）
+   reduce 将数组元素计算为一个值（从左到右）（reduceRight 即从右到左，其他没区别）
    可在 reduce()中传入一个具有两个参数的函数，返回值可对两个参数进行处理
    返回结果为基于返回值对整个数组元素从脚标 0 开始，对前两个元素的返回值作为第二个元素传入第二和第三个元素的处理函数中，以此类推处理所有元素
 
@@ -352,17 +638,23 @@ let arr1 = new Array(5).fill(0);
    let sum = numArr.reduce((f, b) => f + b);
    ```
 
-   > 注意和 sort 不同的是，reduce 的值是按顺序的前后，当前两个元素计算完成后，结果会作为f和再下一个元素传入函数
+   > 注意和 sort 不同的是，reduce 的值是按顺序的前后，当前两个元素计算完成后，结果会作为 f 和再下一个元素传入函数
 
-   利用reduce还可以通过对数字进行转化，实现一个数字各位上数字之和，但是比较耗时
+   利用 reduce 还可以通过对数字进行转化，实现一个数字各位上数字之和，但是比较耗时
+
    ```typescript
    // c = 123， cCnt = 6
-   let cCnt = String(c).split('').map((ch) => Number(ch)).reduce((f, b) => f + b);
+   let cCnt = String(c)
+     .split("")
+     .map((ch) => Number(ch))
+     .reduce((f, b) => f + b);
    // 注意reduce的返回值需要和f，b类型一致，即arr原本的类型
    // 例如上述操作，如果不加map将字符串转为数字数组，则需要在reduce中加上两个Number和一个String，如下
-   let cCnt = String(c).split('').reduce((f, b) => {
-      return String(Number(f) + Number(b));
-   })
+   let cCnt = String(c)
+     .split("")
+     .reduce((f, b) => {
+       return String(Number(f) + Number(b));
+     });
    ```
 
 ###### 拆分
@@ -371,7 +663,7 @@ let arr1 = new Array(5).fill(0);
 
    通过在 slice 中传入两个参数，返回基于元数组脚标的子数组
    生成子数组和脚标的关系为[left,right)，从 left 开始不取到 right
-   如果只有参数 a，则会自动选择末尾为拆分的结尾
+   如果只有参数 ia，则会自动选择末尾为拆分的结尾，即[ia, end)
 
    ```typescript
    // 从left拆分到m
@@ -380,9 +672,10 @@ let arr1 = new Array(5).fill(0);
    ```
 
    如果只有一个参数-1.则会返回最后一个元素的数组，此时第二个参数如果有值，则必定是空数组
+
    ```typescript
-   let arr = [1,2,3,4]
-   console.log(arr.slice(-1)) // 输出[4]
+   let arr = [1, 2, 3, 4];
+   console.log(arr.slice(-1)); // 输出[4]
    ```
 
 ##### 转化
@@ -487,8 +780,9 @@ console.log(s); // "123"
    返回第一个匹配 ch 字符的脚标，不存在返回-1
 
    应用：
-   1. 根据前文可知，一般情况下indexOf(s[i])返回的应该是i，除非有重复的字符，导致匹配到了前一个出现的s[i]的位置
-   通过这一性质可以用于检测是否有重复字符或判断两个字符串间是否出现字符的规律相同
+
+   1. 根据前文可知，一般情况下 indexOf(s[i])返回的应该是 i，除非有重复的字符，导致匹配到了前一个出现的 s[i]的位置
+      通过这一性质可以用于检测是否有重复字符或判断两个字符串间是否出现字符的规律相同
 
    > 示例题目：205. 同构字符串
 
@@ -560,16 +854,19 @@ const num = `(${numA})(${numB})`;
 
 正则表达式 expr 可通过有关的符号进行内容的匹配
 进而可结合 replace 等函数进行有关内容的替换
+
 ##### 初始化
 
-利用初始化函数new RegExp()可以创建一个正则表达式，可传入多个参数，示例如下
+利用初始化函数 new RegExp()可以创建一个正则表达式，可传入多个参数，示例如下
+
 ```typescript
-let str = 'a';
-let expr = new RegExp(str, 'g'); // 生成一个可全局匹配单个a的正则表达式
+let str = "a";
+let expr = new RegExp(str, "g"); // 生成一个可全局匹配单个a的正则表达式
 // 注意一些特殊符号在正则表达式中有含义，例如\
 // 因此如果要基于\生成正则，需要先替换为相应的转义符号，如下所示
-if (str === '\\') str = '\\\\';
+if (str === "\\") str = "\\\\";
 ```
+
 ##### 语法规则
 
 介绍如下：
@@ -658,7 +955,7 @@ const keyToIndex = new Map([["name", "wyx"]]);
 // 生成一个初始有键name，值wyx的字典
 ```
 
-注意map在大多数情况下可以用数组替换，即通过搭建一个数组，给数组的索引一个意义，便可实现基于索引对某些内容进行统计
+注意 map 在大多数情况下可以用数组替换，即通过搭建一个数组，给数组的索引一个意义，便可实现基于索引对某些内容进行统计
 
 ##### 调整
 
@@ -688,8 +985,8 @@ const keyToIndex = new Map([["name", "wyx"]]);
 
 1. keys() / values()
 
-   获取按set前后顺序所排序的所有键或者值的map迭代器
-   利用for循环等方式便可进一步遍历
+   获取按 set 前后顺序所排序的所有键或者值的 map 迭代器
+   利用 for 循环等方式便可进一步遍历
 
 ##### 高级操作
 
@@ -915,8 +1212,8 @@ obj.addCar(carType);
 
 3. 加速运算
 
-   对于乘2和除2之类的操作，使用位运算可以使得运算更快
-   乘2的话只需左移<<，除2的话是右移>>，注意除2由于会直接消失一位（可能0或者1），所以相当于Math.fix()函数
+   对于乘 2 和除 2 之类的操作，使用位运算可以使得运算更快
+   乘 2 的话只需左移<<，除 2 的话是右移>>，注意除 2 由于会直接消失一位（可能 0 或者 1），所以相当于 Math.fix()函数
 
 ### 取余%
 
@@ -980,13 +1277,13 @@ b = -7 % 3; // -1
 
 2. 交换变量
 
-   不需要临时变量交换数值可以通过搭建数组来实现直接交换，比较简洁，示例如下
+   不需要临时变量交换数值可以通过元组来实现直接交换，比较简洁，示例如下
 
    ```typescript
    [a, b] = [b, a];
    ```
 
-   但也有代价，例如使用更多的空间
+   但也有代价？？？例如使用更多的空间
 
 3. 减少函数的调用和传值
 

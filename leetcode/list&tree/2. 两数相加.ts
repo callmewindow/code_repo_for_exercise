@@ -2,7 +2,7 @@
 // 逆序加和，进位处理
 function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
   // 因为是倒序，所以没办法*10再+，为了利用倒序的性质，可以同步读取，计算后加到前一位
-  let lSum = new ListNode();
+  let lSum: any = new ListNode();
   // 临时保存头节点
   let res = lSum;
   // 都是null才退出

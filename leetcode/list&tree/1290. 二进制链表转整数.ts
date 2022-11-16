@@ -1,6 +1,7 @@
 // https://leetcode.cn/problems/convert-binary-number-in-a-linked-list-to-integer/
 // 根据题意按顺序读取，并按进位运算对数据进行更新
 function getDecimalValue(head: ListNode | null): number {
+  if(!head) return 0;
   // 记录总和
   let sum: number = 0;
   while (head.next != null) {

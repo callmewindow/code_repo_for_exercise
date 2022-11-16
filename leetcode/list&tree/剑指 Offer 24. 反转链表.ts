@@ -1,11 +1,11 @@
 // https://leetcode.cn/problems/fan-zhuan-lian-biao-lcof/
 // 比较花空间的从零搭建链表，勉强算过
 function reverseList(head: ListNode | null): ListNode | null {
-  if (head == null) return null
+  if (!head) return null;
   let headNew = new ListNode();
   let headHelp = new ListNode();
   // 因为要倒序，没必要到null的时候
-  while (head.next != null) {
+  while (head && head.next) {
     let headN = head.next;
     // 第一次
     if (headNew.next == null) {
@@ -25,7 +25,7 @@ function reverseList(head: ListNode | null): ListNode | null {
   return headNew;
 };
 
-// 优化变量使用和判断逻辑
+// 优化变量使用和判断逻辑，边读取变实现拼接
 function reverseList_optimize(head: ListNode | null): ListNode | null {
   let prev: ListNode | null = null;
   let curr = head;

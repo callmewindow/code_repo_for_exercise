@@ -5,11 +5,8 @@ function maxSubArray(nums: number[]): number {
   // 用两个值分别保存记录当前值和不记录当前值的情况
   // 这样dp[0]判断记录或不记录哪个最大就是就是最大的连续子数组和
   const nLen = nums.length
-  let maxSubSum = Array(nLen)
-    .fill(0)
-    .map(
-      () => Array(2).fill(Number.MIN_SAFE_INTEGER)
-    );
+  let maxSubSum = Array(nLen).fill(0)
+    .map(() => Array(2).fill(Number.MIN_SAFE_INTEGER));
 
   // 初始化边界值，记录就是自身+后面的所有，不记录就是最小值
   maxSubSum[nLen - 1][0] = nums[nLen - 1];

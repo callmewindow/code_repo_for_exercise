@@ -8,7 +8,7 @@ var dfs = function (cur) {
   if (cur == null) return; // 到终点则返回
   dfs(cur.left);
 
-  // pre是null时表示这是读到的第一个元素，所以需要设定头节点
+  // pre是null时表示这是读到的第一个元素，即最小元素，所以需要设定头节点
   if (pre == null) head = cur;
   else pre.right = cur; // 否则cur一定比pre大，所以pre的右为cur
 

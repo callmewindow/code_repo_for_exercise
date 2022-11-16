@@ -49,6 +49,7 @@ var copyRandomList_1 = function (head) {
     cur.next.random = cur.random == null ? null : cur.random.next;
     cur = cur.next.next;
   }
+  
   // 为了后面处理时正常找位置，这里应该是next，即新节点
   cur = head.next;
   // 注意最后head还需要恢复回去

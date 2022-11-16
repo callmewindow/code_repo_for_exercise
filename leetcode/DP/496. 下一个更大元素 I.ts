@@ -26,8 +26,8 @@ function nextGreaterElement(nums1: number[], nums2: number[]): number[] {
 
 // 手写单调栈，貌似速度没有提高
 function nextGreaterElement_1(nums1: number[], nums2: number[]): number[] {
-  let l_1 = nums1.length
-  let l_2 = nums2.length
+  let l_1 = nums1.length;
+  let l_2 = nums2.length;
   // reverse也会让自己改变
   let nums1_bigger: number[] = new Array(l_1).fill(-1);
   let nums2_bigger: number[] = new Array(l_2).fill(-2);
@@ -39,7 +39,7 @@ function nextGreaterElement_1(nums1: number[], nums2: number[]): number[] {
       l_h = nums2_help.length;
       if (l_h == 0) {
         // 没有元素表示自己最大，入栈然后退出
-        nums2_help.push(nums2[i_2])
+        nums2_help.push(nums2[i_2]);
         nums2_bigger[i_2] = -1;
       } else {
         // 如果有数值就和头部的判断
@@ -52,7 +52,7 @@ function nextGreaterElement_1(nums1: number[], nums2: number[]): number[] {
           } else {
             // 否则就一直弹出
             nums2_help.pop();
-            l_h = nums2_help.length
+            l_h = nums2_help.length;
           }
         }
       }
@@ -92,7 +92,7 @@ function nextGreaterElement_2(nums1: number[], nums2: number[]): number[] {
 function nextGreaterElement_3(nums1: number[], nums2: number[]): number[] {
   // 用map来存储数和更大数的匹配，可以节省效率
   let num_map = new Map();
-  let nums1_bigger: number[] = new Array(nums1.length)
+  let nums1_bigger: number[] = new Array(nums1.length);
   let nums2_help: number[] = [];
   let l_h: number;
   for (let i_2 = nums2.length - 1; i_2 >= 0; i_2--) {
@@ -111,7 +111,7 @@ function nextGreaterElement_3(nums1: number[], nums2: number[]): number[] {
   }
   // 这种有规律的基于某个值的赋值也可以利用map优化
   nums1.every((n_1, i_1, nums1) => {
-    nums1_bigger[i_1] = num_map.get(n_1)
+    nums1_bigger[i_1] = num_map.get(n_1);
     return true;
   })
   return nums1_bigger
