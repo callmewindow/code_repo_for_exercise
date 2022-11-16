@@ -2,6 +2,7 @@
 // dps回溯寻找所有可能
 let row_1: number, col_1: number;
 const mv = [[-1, 0], [1, 0], [0, -1], [0, 1]] // 上、下、左、右
+
 // 这里的bd是引用，所以不会产生额外的时间和内存
 function dfsWord(bd: string[][], r: number, c: number, word: string, k: number): boolean {
   // 判断超出边界的情况，k为已经判断了的
@@ -16,6 +17,7 @@ function dfsWord(bd: string[][], r: number, c: number, word: string, k: number):
   bd[r][c] = word[k];
   return find;
 }
+
 function exist(board: string[][], word: string): boolean {
   // 直接硬做，设定边界开始遍历
   row_1 = board.length, col_1 = board[0].length;

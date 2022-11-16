@@ -23,12 +23,13 @@ function shortestPathAllKeys(grid: string[]): number {
     }
   }
 
-  const queue = [];
+  const queue: number[][] = [];
   const dist = new Array(m).fill(0).map(() => new Array(n).fill(0).map(() => new Array(1 << keyToIndex.size).fill(-1)));
   queue.push([sx, sy, 0]);
   dist[sx][sy][0] = 0;
   while (queue.length) {
     const arr = queue.shift();
+    if (arr == undefined) continue;
     let x = arr[0], y = arr[1], mask = arr[2];
     for (let i = 0; i < 4; ++i) {
       let nx = x + dirs[i][0];

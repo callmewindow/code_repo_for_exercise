@@ -56,7 +56,7 @@ const 一般用于声明一些不会被改变的量，例如全局使用的参�
 minX = tower[0] < minX ? tower[0] : minX;
 ```
 
-##### 脚标递增
+##### 脚标递增或递减
 
 脚标递增一般在 for 循环中使用的较多，在一些需要循环处理的代码中也常用
 一般使用的如下
@@ -67,6 +67,9 @@ i++; // 返回值还是i
 i += 1; // 不返回i
 ```
 
+一般情况下++i，--i更加好用，因为可以直接返回变化后的值，进而进行一些处理，不需要再去获取判断
+当需要i从0-n时可以i++，当需要从1-n时，++i更加好用
+
 #### 常见值
 
 ##### 无值
@@ -75,7 +78,9 @@ i += 1; // 不返回i
    空，常见于链表，树等节点所在的地方，用 null 来表示结尾
 
 2. undefined
-   未定义，常见易 map.get 等函数，当尝试获取某个值时，如果存在会返回对应值，否则会返回 undefined
+   未定义，常见于 map.get 等函数，当尝试获取某个值时，如果存在会返回对应值，否则会返回 undefined
+   对应函数：
+   map.get, arr.shift(), arr.pop()
 
 ##### 极限值
 
@@ -152,39 +157,76 @@ let arr1 = new Array(5).fill(0);
 
 ##### 调整
 
+1. splice(start, cnt, item)
+
+   splice可以实现删除和增加，start为起始脚标，cnt为删除的数量，item为增加的元素
+   item需要和数组类型一致，对于数组可以使用...arr来实现批量加入，这里的加入是正序的
+
+   如果cnt<=0那么不会删除任何元素，返回值会变为空数组，如果>1，则会返回删除元素组成的数组
+
+   ```typescript
+   // 删除hello数组1脚标开始的2个元素后，插入4，5，6
+   let hello = [0,1,2,3,4]
+   console.log(hello.splice(1,2,...[4,5,6])) // 输出[1,2]，单纯增加元素只会返回空数组
+   // hello:0,4,5,6,3,4
+   // 注意加入元素的位置是对应着start的，即如果不删除直接加入，会把原本start位置的元素后移
+   let arr = [1,2,3]
+   arr.splice(1,0,4) // arr:[1,4,2,3]
+   ```
+
+   如果第一个参数是-1，如果cnt>0，则必定会剔除最后一个元素，即使cnt>1也只会剔除一个，因为是从-1开始剔除
+   如果增加元素则是在原本最后一个的位置进行加入，即成为倒数第二个元素，脚标对应的仍然是旧len-1
+   ```typescript
+   let hello = [1,2,3]
+   hello.splice(-1,0,4)
+   console.log(hello) // [1,2,4,3]
+   ```
+
+2. length
+
+   length不只可以用于获取精度，通过增减length可以实现对数组基于末尾的增加和减少
+   例如length-1会导致数组最后一个数据直接丢失，再+1也不会回来
+   length+1会在末尾生成一个空元素，undefined
+
 ###### 增加
 
 1. push()
 
    一般使用可在数组末尾增加一个元素
+   向数组的末尾添加一个或更多元素，并返回新的长度。
 
 2. unshift()
 
-   在数组头部增加一个元素
+   在数组头部增加一个元素，并返回新的长度。
 
-3. concat(arr[])
+3. concat(arr)
 
    通过在 concat()中传入一个数组可实现二者的合并，并返回新数组，如果不传入参数则相当于对数组进行复制
    常用于数组的复制，复制后对新数组操作不会影响旧数组
 
-```typescript
-let newArr = arr.concat();
-arr[0] = 0;
-newArr[0] = 1;
-// arr[0] != newArr[0]
-```
+   ```typescript
+   let arr = [0,1]
+   let newArr = arr.concat([2]);
+   arr[1] = 2;
+   console.log(newArr) // 0,1,2
+   ```
 
 ###### 减少
 
 1. pop()
 
-   删除数组末尾的元素并返回
+   删除数组末尾的元素并返回被函数的元素
 
 2. shift()
 
    删除数组头部的元素并返回
 
-###### 变序
+3. delete
+
+   delete是一个关键字，在后面加入一个数组元素可以实现基于引用的清空
+   清除后会变成undefined
+
+###### 变化
 
 1. reverse()
 
@@ -195,23 +237,39 @@ newArr[0] = 1;
    排序，如果不输入参数，默认按从小到大的字典序排序，注意是字典序，不是大小从小到大的
    进阶操作可在括号中加入函数，实现对数组元素的精准判断处理，示例如下
 
-> 注意，sort 函数比较特殊，该函数在数组中被执行后，会直接修改数组的值，因此如果不想如此需要提前深拷贝
+   > 注意，sort 函数比较特殊，该函数在数组中被执行后，会直接修改数组的值，因此如果不想如此需要提前深拷贝
 
-```typescript
-// 将sArr排序为前一个元素的索引小于后一个元素索引的情况
-// back为后一个元素，front为前一个元素，当返回值大于等于0则不调整顺序，小于0则反转前后顺序
-sArr = sArr.sort(
-  (b, f) => {
-    let bI = oMap.get(b), fI = oMap.get(f);
-    if (bI != undefined && fI != undefined) return bI - fI
-    // 不存在的默认排在前面，小于0时会转b和f的顺序，大于等于0则顺序不变
-    return fI == undefined ? 1 : -1;
-  }
+   ```typescript
+   // 将sArr排序为前一个元素的索引小于后一个元素索引的情况
+   // back为后一个元素，front为前一个元素，当返回值大于等于0则不调整顺序，小于0则反转前后顺序
+   sArr = sArr.sort(
+   (b, f) => {
+      let bI = oMap.get(b), fI = oMap.get(f);
+      if (bI != undefined && fI != undefined) return bI - fI
+      // 不存在的默认排在前面，小于0时会转b和f的顺序，大于等于0则顺序不变
+      return fI == undefined ? 1 : -1;
+   }
 
-// 可以根据条件灵活的对元素进行调序，例如将奇数放在偶数前
-// sort函数如下
-nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
-```
+   // 可以根据条件灵活的对元素进行调序，例如将奇数放在偶数前
+   // sort函数如下
+   nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
+   ```
+
+3. map(func)
+   
+   通过指定函数处理数组的每个元素，并返回处理后的数组
+
+   映射，func 是一个可接收多个参数的函数，返回值代表基于当前值所得到的新值
+   如果只有一个参数，该参数就代表按顺序遍历的数组的值
+   如果有两个参数，该参数就代表按顺序遍历的数组的值和对应的索引
+
+   > map 函数中接受的值是原本的类型，其他运算符也会适配其类型，例如字符串就会是拼接
+
+   ```typescript
+   // sA是字符串数组，ch是字符串
+   console.log(sA.map((ch) => ch + 1)); // 拼接了1的字符串
+   console.log(sA.map((ch) => String.fromCharCode(ch.charCodeAt(0) + 1))); // ascii码+1的字符
+   ```
 
 ##### 获取
 
@@ -221,9 +279,9 @@ nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
 
    返回 item 是否存在于当前数组中
 
-2. indexOf(item)
+2. indexOf(item) / lastIndexOf(item)
 
-   返回数组中第一个 item 元素的脚标，不存在返回-1
+   返回数组中第一个 / 最后一个 item 元素的脚标，不存在返回-1
 
 ###### 遍历
 
@@ -231,12 +289,61 @@ nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
 
    通过 of 可对数组内容进行依次获取
 
-2.
+2.	every(func)
+
+   检测数值元素的每个元素是否都符合条件。
+   ```typescript
+   function isBigEnough(element, index, array) { 
+         return (element >= 10); 
+   } 
+         
+   var passed = [12, 5, 8, 130, 44].every(isBigEnough); 
+   console.log("Test Value : " + passed ); // false
+   ```
+3.	some(func)
+
+   检测数组元素中是否有元素符合指定条件。
+   ```typescript
+   function isBigEnough(element, index, array) { 
+      return (element >= 10); 
+            
+   } 
+            
+   var retval = [2, 5, 8, 1, 4].some(isBigEnough);
+   console.log("Returned value is : " + retval );  // false
+            
+   var retval = [12, 5, 8, 1, 4].some(isBigEnough); 
+   console.log("Returned value is : " + retval );  // true
+   ```
+
+4.	filter()
+   检测数值元素，并返回符合条件所有元素的数组。
+   ```typescript
+   function isBigEnough(element, index, array) { 
+      return (element >= 10); 
+   } 
+            
+   var passed = [12, 5, 8, 130, 44].filter(isBigEnough); 
+   console.log("Test Value : " + passed ); // 12,130,44
+   ```
+
+5.	forEach()
+   数组每个元素都执行一次回调函数。
+   ```typescript
+   let num = [7, 8, 9];
+   num.forEach(function (value) {
+      console.log(value);
+   }); 
+   ```
+
+
 
 ###### 计算
 
-1. reduce()
+1. reduce() / reduceRight()
 
+   
+   reduce将数组元素计算为一个值（从左到右）（reduceRight即从右到左，其他没区别）
    可在 reduce()中传入一个具有两个参数的函数，返回值可对两个参数进行处理
    返回结果为基于返回值对整个数组元素从脚标 0 开始，对前两个元素的返回值作为第二个元素传入第二和第三个元素的处理函数中，以此类推处理所有元素
 
@@ -244,7 +351,19 @@ nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
    // 计算数组元素总和
    let sum = numArr.reduce((f, b) => f + b);
    ```
-   > 注意和sort不同的是，reduce的值是按顺序的前后
+
+   > 注意和 sort 不同的是，reduce 的值是按顺序的前后，当前两个元素计算完成后，结果会作为f和再下一个元素传入函数
+
+   利用reduce还可以通过对数字进行转化，实现一个数字各位上数字之和，但是比较耗时
+   ```typescript
+   // c = 123， cCnt = 6
+   let cCnt = String(c).split('').map((ch) => Number(ch)).reduce((f, b) => f + b);
+   // 注意reduce的返回值需要和f，b类型一致，即arr原本的类型
+   // 例如上述操作，如果不加map将字符串转为数字数组，则需要在reduce中加上两个Number和一个String，如下
+   let cCnt = String(c).split('').reduce((f, b) => {
+      return String(Number(f) + Number(b));
+   })
+   ```
 
 ###### 拆分
 
@@ -254,10 +373,17 @@ nums.sort((b, f) => {return f % 2 == 1 ? 1 : -1;})
    生成子数组和脚标的关系为[left,right)，从 left 开始不取到 right
    如果只有参数 a，则会自动选择末尾为拆分的结尾
 
-```typescript
-// 从left拆分到m
-let s2 = s.slice(left, m);
-```
+   ```typescript
+   // 从left拆分到m
+   let s2 = s.slice(left, m);
+   // 注意slice只会严格按照ia和ib拆分，如果ib<=ia则会返回空数组
+   ```
+
+   如果只有一个参数-1.则会返回最后一个元素的数组，此时第二个参数如果有值，则必定是空数组
+   ```typescript
+   let arr = [1,2,3,4]
+   console.log(arr.slice(-1)) // 输出[4]
+   ```
 
 ##### 转化
 
@@ -271,12 +397,12 @@ let s2 = s.slice(left, m);
 
 通过在一个数组前加...操作符，可将其传入一些不能传入数组的函数中
 例如 Math.max，可计算数组的最大值
-例如 push，会倒序一个个的把数组元素输入
+例如 push，会一个个的把数组元素输入
 
 ```typescript
-arr = [1, 2, 3];
+let arr = [1, 2, 3];
 Math.max(...arr); // 3
-arr.push(...[4, 5, 6]); // 1,2,3,6,5,4，挺奇怪
+arr.push(...[4, 5, 6]); // 1,2,3,4,5,6，挺奇怪
 ```
 
 #### 字符串 String
@@ -360,6 +486,12 @@ console.log(s); // "123"
 
    返回第一个匹配 ch 字符的脚标，不存在返回-1
 
+   应用：
+   1. 根据前文可知，一般情况下indexOf(s[i])返回的应该是i，除非有重复的字符，导致匹配到了前一个出现的s[i]的位置
+   通过这一性质可以用于检测是否有重复字符或判断两个字符串间是否出现字符的规律相同
+
+   > 示例题目：205. 同构字符串
+
 3. charAt(index)
 
    返回字符串在该脚标的字符
@@ -368,7 +500,9 @@ console.log(s); // "123"
 
    返回字符串在该脚标的字符的 ASCII 码
    在新版中至少需要输入一个元素，如果只有一个字符串也需要输入 0
-   常见的 ascii 码：a：？？？
+   常见的 ascii 码：
+   整体范围：0~9 < A~Z < a~z
+   0:48,A:65,a:97
 
 5. String.fromCharCode(num)
 
@@ -412,10 +546,32 @@ console.log(s); // "123"
 
 ##### 高级操作
 
-###### 正则表达式
+###### 反引号
+
+通过反引号`实现在内部直接拼接变量和字符串的效果
+变量需要使用${}进行封装，示例如下
+
+```typescript
+// 将numA和numB的值进行合并，形成(a的值)(b的值)样式的字符串
+const num = `(${numA})(${numB})`;
+```
+
+#### 正则表达式 RegExp
 
 正则表达式 expr 可通过有关的符号进行内容的匹配
-进而可结合 replace 函数进行有关内容的替换
+进而可结合 replace 等函数进行有关内容的替换
+##### 初始化
+
+利用初始化函数new RegExp()可以创建一个正则表达式，可传入多个参数，示例如下
+```typescript
+let str = 'a';
+let expr = new RegExp(str, 'g'); // 生成一个可全局匹配单个a的正则表达式
+// 注意一些特殊符号在正则表达式中有含义，例如\
+// 因此如果要基于\生成正则，需要先替换为相应的转义符号，如下所示
+if (str === '\\') str = '\\\\';
+```
+##### 语法规则
+
 介绍如下：
 正则表达式的开始和结尾：开始为/，结束为/g，在中间便可输入字符，示例如下
 
@@ -443,6 +599,11 @@ newS = s.replace(/[\s]/g, "%20");
 
    中括号 \[expr\]
    表示一个或零个 expr，如果只有一个[]出现，那么就是匹配单独的 expr
+   expr 可以是一个值，也可以是范围
+
+   ```typescript
+   let t = s.replace(/[a-z,A-Z]/g, "0"); // 所有大小写字母换成0
+   ```
 
 4. 星号 expr\*
 
@@ -452,16 +613,6 @@ newS = s.replace(/[\s]/g, "%20");
    // 将一个以上的空格替换为一个空格
    s = s.replace(/\s\s*/g, " ");
    ```
-
-###### 反引号
-
-通过反引号`实现在内部直接拼接变量和字符串的效果
-变量需要使用${}进行封装，示例如下
-
-```typescript
-// 将numA和numB的值进行合并，形成(a的值)(b的值)样式的字符串
-const num = `(${numA})(${numB})`;
-```
 
 #### 栈 stack 和队列 Queue
 
@@ -507,6 +658,8 @@ const keyToIndex = new Map([["name", "wyx"]]);
 // 生成一个初始有键name，值wyx的字典
 ```
 
+注意map在大多数情况下可以用数组替换，即通过搭建一个数组，给数组的索引一个意义，便可实现基于索引对某些内容进行统计
+
 ##### 调整
 
 ###### 增加元素
@@ -517,13 +670,11 @@ const keyToIndex = new Map([["name", "wyx"]]);
 
 ##### 获取
 
-###### 有关数值
-
 1. size
 
    获取 map 中键值对的数量
 
-###### 有关函数
+###### 单元素
 
 1. has()
 
@@ -532,6 +683,13 @@ const keyToIndex = new Map([["name", "wyx"]]);
 2. get()
 
    获取某个键对应的值，返回值或 undefined
+
+###### 遍历
+
+1. keys() / values()
+
+   获取按set前后顺序所排序的所有键或者值的map迭代器
+   利用for循环等方式便可进一步遍历
 
 ##### 高级操作
 
@@ -717,7 +875,7 @@ obj.addCar(carType);
 
 2. 规律替换
 
-   考虑到1^1=0,0^1=1，可以用这个规律使得一个变量在0和1之间替换，其他的数字或者符号之间的规律替换也可以利用这一性质
+   考虑到 1^1=0,0^1=1，可以用这个规律使得一个变量在 0 和 1 之间替换，其他的数字或者符号之间的规律替换也可以利用这一性质
 
 ##### 和&
 
@@ -749,11 +907,16 @@ obj.addCar(carType);
 
 2. 遍历
 
-   相当于前者的进阶，结合01对状态的保存来实现不同情况的筛选
-   即比如找三元素数组的所有子数组，只需用mark从1遍历到8，那么就会得到001、010、011、100、101等从001到111的所有可能
-   进而只需遍历三元素数组，通过当前脚标和mark进行和运算，便可基于1的出现位置来得到所有的子数组
+   相当于前者的进阶，结合 01 对状态的保存来实现不同情况的筛选
+   即比如找三元素数组的所有子数组，只需用 mark 从 1 遍历到 8，那么就会得到 001、010、011、100、101 等从 001 到 111 的所有可能
+   进而只需遍历三元素数组，通过当前脚标和 mark 进行和运算，便可基于 1 的出现位置来得到所有的子数组
+
    > 示例题目：805. 数组的均值分割
 
+3. 加速运算
+
+   对于乘2和除2之类的操作，使用位运算可以使得运算更快
+   乘2的话只需左移<<，除2的话是右移>>，注意除2由于会直接消失一位（可能0或者1），所以相当于Math.fix()函数
 
 ### 取余%
 
@@ -802,10 +965,9 @@ b = -7 % 3; // -1
 
    n*(n+1)/2，判断大小可优化为 n*(n+1) < 2\*something
 
-##### 优化为位运算
+3. 平均值
 
-对于乘 2，除 2 之类的操作可以替换为左移 1 和右移 1
-位运算的速度相比普通运算更加快速
+   两部分平均值是否相同，转化为 A 的 sum \*B 的 len 和 B 的 sum \*A 的 len 进行就计算
 
 ## 技巧
 

@@ -10,20 +10,6 @@ function gcd(a: number, b: number): number {
   // 这里如果调用abs和min函数也可能会导致栈溢出或超时，毕竟多调用了函数
   // return gcd(Math.abs(a-b), Math.min(a,b));
 }
-function leastComMul(nums: number[], k: number): number {
-  // 正常方法：长度为1，当且仅当num == k，长度为2，计算两个元素的最小公倍数然后和k比较
-  // 长度超过2，先计算前两个，然后增加第三个元素，按顺序进行
-  const numL = nums.length;
-  if (numL == 0) return -1;
-  if (numL == 1) return nums[0];
-  let lcm = nums[0];
-  for (let i = 1; i < numL; i++) {
-    // 大于k则不可能k是最小公倍数
-    if (lcm > k || nums[i] > k) return -1;
-    lcm = (lcm * nums[i]) / gcd(lcm, nums[i]);
-  }
-  return lcm;
-}
 function subarrayLCM(nums: number[], k: number): number {
   // 以number为最小公倍数，即number为可以被子数组所有元素整除的最小数
   // 因为是连续子数组，所以判断能否整除应该在遍历过程中进行
@@ -52,7 +38,21 @@ function subarrayLCM(nums: number[], k: number): number {
   return cntA;
 };
 
-// 错误的代码，判断所有子数组中最小公倍数为k的情况数
+// ! 错误的代码，判断所有子数组中最小公倍数为k的情况数
+function leastComMul(nums: number[], k: number): number {
+  // 正常方法：长度为1，当且仅当num == k，长度为2，计算两个元素的最小公倍数然后和k比较
+  // 长度超过2，先计算前两个，然后增加第三个元素，按顺序进行
+  const numL = nums.length;
+  if (numL == 0) return -1;
+  if (numL == 1) return nums[0];
+  let lcm = nums[0];
+  for (let i = 1; i < numL; i++) {
+    // 大于k则不可能k是最小公倍数
+    if (lcm > k || nums[i] > k) return -1;
+    lcm = (lcm * nums[i]) / gcd(lcm, nums[i]);
+  }
+  return lcm;
+}
 function subarrayLCM_1(nums: number[], k: number): number {
   // 以number为最小公倍数，即number为可以被子数组所有元素整除的最小数
   // 首先遍历一遍，去除无法将k整除的元素
