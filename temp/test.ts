@@ -1,3 +1,9 @@
-let root: Node | null;
-let nodeList: (Node | null)[];
-let nodeList2: Array<Node | null>;
+
+
+
+console.log(5/2)
+console.log(Math.floor(5/2))
+console.log(5 >> 1)
+console.log((-5)/2)
+console.log(Math.floor((-5)/2))
+console.log(-5 >> 1)
