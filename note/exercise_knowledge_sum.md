@@ -1245,10 +1245,6 @@ obj.addCar(carType);
 和字符串的 String 相同，直接使用 Number('123')也会将其中的内容尝试转为数字
 并且会转为合法数字，例如 1.200 会转为 1.2
 
-### 其他知识
-
-#### 地址串处理
-
 ## 算法
 
 ### 遍历
@@ -1488,5 +1484,56 @@ b = -7 % 3; // -1
 #### 影响
 
 设计测试样例时注意刻意针对薄弱点进行，例如对 0 位置进行了修改，便需要针对这里进行针对测试
+
+## 其他内容
+
+### vscode 使用技巧
+
+#### 扩展推荐
+
+| 扩展名                         | 扩展类型 | 扩展描述 |
+| ------------------------------ | -------- | -------- |
+| auto rename tag                |          |          |
+| change case                    |          |          |
+| code spell checker             |          |          |
+| css peek                       |          |          |
+| doxygen documentation generate |          |          |
+| eslint                         |          |          |
+| gitlens                        |          |          |
+| icon fonts                     |          |          |
+| javascript and typescript      |          |          |
+| live server                    |          |          |
+| material icon theme            |          |          |
+| mysql                          |          |          |
+| one dark pro                   |          |          |
+| open in brower                 |          |          |
+| path intellisense              |          |          |
+| prettier                       |          |          |
+| pylance                        |          |          |
+| python indent                  |          |          |
+| qt for python                  |          |          |
+| regex previewer                |          |          |
+| remote ssh                     |          |          |
+| typescript hero                |          |          |
+| vs code counter                |          |          |
+| vue language feature           |          |          |
+| wsl                            |          |          |
+
+#### 快速编辑内容
+
+1. 快速复制一行
+
+   将光标放在某一行上，可以是中间也可以是末尾，直接 ctrl/command + c 即可复制一整行，复制后是带有回车的
+
+   同时使用这种方式复制的内容，在粘贴时，只要没有选中要粘贴的区域（例如替换掉几个字），均会将内容重启一行然后再粘贴，即使光标在一行的中间也不会影响这一行的内容
+
+2. 快速剪切一行
+
+   和复制类似，只需修改为剪切指令即可：ctrl/command + x
+
+3. 快速删除一行
+
+   用 vim 插件的话可以直接 dd，无奈还是感觉不方便
+   在正常模式下，只需使用剪切的技巧即可，即将光标放在要删除的那一行，然后执行剪切指令，即可实现删除（不粘贴就算删除）
 
 <link rel="stylesheet" type="text/css" href="../assets/auto_title_number.css" />

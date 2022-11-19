@@ -27,10 +27,6 @@ var copyRandomList = function (head) {
 };
 
 // 先将新节点和旧节点连接起来，然后依次基于cur处理cur.next实现拆分
-/**
- * @param {Node} head
- * @return {Node}
- */
 var copyRandomList_1 = function (head) {
   if (head == null) return head;
   let cur = head;
