@@ -1,9 +1,2 @@
-
-
-
-console.log(5/2)
-console.log(Math.floor(5/2))
-console.log(5 >> 1)
-console.log((-5)/2)
-console.log(Math.floor((-5)/2))
-console.log(-5 >> 1)
+console.log(-7 % -3)
+console.log(7 - -3 * Math.ceil(7 / -3))
