@@ -34,7 +34,7 @@ function largestSumOfAverages(nums: number[], k: number): number {
 };
 
 // 根据每次只需要j-1的情况，只需用一位数组即可
-function largestSumOfAverages(nums: number[], k: number): number {
+function largestSumOfAverages_1(nums: number[], k: number): number {
   const n = nums.length;
   const prefix = new Array(n + 1).fill(0); // 记录前缀和，用于后续初始化dp数组
   for (let i = 0; i < n; i++) prefix[i + 1] = prefix[i] + nums[i]; // 多初始化一位可以不用专门初始化第一位

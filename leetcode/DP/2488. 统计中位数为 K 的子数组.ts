@@ -47,12 +47,7 @@ function countSubarrays(nums: number[], k: number): number {
 
 // 优化dp为值记录大于k的值，并根据k的大小判断可能扩散的范围
 // 最坏情况仍然超时
-function countSubarrays(nums: number[], k: number): number {
-
-  // 看似是一个全排列，其实不是，因为找中位数也是要基于递增顺序的
-  // 所以只需要基于要寻找的中位数，找出在左侧和右侧取出相同数量数的情况乘积
-  // 但因为是连续的，所以不需要找情况，直接基于4向两侧延伸，看大于小于的数量即可，使用dp
-  // 只有当数组中存在k，小于的是n，大于的是m，当n+m+1奇数，n应该=m，当偶数，m=n+1
+function countSubarrays_1(nums: number[], k: number): number {
   let res = 0;
   const nLen = nums.length;
   // 嵌套循环太花时间
@@ -76,12 +71,7 @@ function countSubarrays(nums: number[], k: number): number {
     } else {
       dp[i] = nums[i - 1] > k ? tmp + 1 : tmp;
     }
-    // console.log(dp);
   }
-  // console.log(kI);
-  // 进而至于左侧从kI到1，右侧从kI到nLen-1，分别遍历看k是否是中位数
-  // 注意dp比nums的脚标多1，所以实际的脚标应该是kI+1，最大长度也应该是nLen+1
-
   // 这里注意不需要全遍历，根据k和nLen-1的关系，调整的范围是有限制的
   // 例如当k等于n，那么范围就是0，因为只要多于1个数，就不会符合情况
   // 如果k等于n-1，范围就是1，即只有当连续子数组长度小于等于3，自己才有可能
@@ -94,7 +84,6 @@ function countSubarrays(nums: number[], k: number): number {
       // 大于的
       const m = dp[j] - dp[i - 1];
       // console.log(n,m)
-      // 看是否满足情况，满足+，不满足继续循环
       if ((n + m + 1) % 2 == 1) {
         if (m == n) res++;
       } else {
@@ -105,22 +94,13 @@ function countSubarrays(nums: number[], k: number): number {
   return res;
 };
 
-
 // 再次优化，在初始化dp时便进基于需要的范围去处理
 // 但还是最坏情况On2，最后一个超时
-function countSubarrays(nums: number[], k: number): number {
-
-  // 看似是一个全排列，其实不是，因为找中位数也是要基于递增顺序的
-  // 所以只需要基于要寻找的中位数，找出在左侧和右侧取出相同数量数的情况乘积
-  // 但因为是连续的，所以不需要找情况，直接基于4向两侧延伸，看大于小于的数量即可，使用dp
-  // 只有当数组中存在k，小于的是n，大于的是m，当n+m+1奇数，n应该=m，当偶数，m=n+1
+function countSubarrays_2(nums: number[], k: number): number {
   let res = 0;
   const nLen = nums.length;
-  // 嵌套循环太花时间
   // 对一些特殊情况做处理：
-  // 如果k是nums中的最大值，一定是1
   if (k == nLen) return 1;
-  // 如果k是最小值1，则长度大于等于3时是3，否则等于数组长度
   if (k == 1) return nLen >= 3 ? 3 : nLen;
 
   // 这里注意不需要全遍历，根据k和nLen-1的关系，调整的范围是有限制的
@@ -141,12 +121,8 @@ function countSubarrays(nums: number[], k: number): number {
     const tmp = dp[i - 1];
     if (nums[i - 1] == k) dp[i] = tmp;
     else dp[i] = nums[i - 1] > k ? tmp + 1 : tmp;
-    // console.log(dp);
   }
-  // console.log(kI);
   // 进而至于左侧从kI到1，右侧从kI到nLen-1，分别遍历看k是否是中位数
-  // 注意dp比nums的脚标多1，所以实际的脚标应该是kI+1，最大长度也应该是nLen+1
-
   for (let i = kI + 1; i >= left; i--) {
     // 注意j这里的范围多大是取决于前面使用了多少元素的，需要基于i调整后面最多遍历到多长
     // 前面使用了1，后面就少1，前面使用了range-1，后面只看1即可
@@ -157,8 +133,6 @@ function countSubarrays(nums: number[], k: number): number {
       const n = (j - dp[j] - 1) - (i - 1 - dp[i - 1]); // 因为dp是包含自身的，因此减的时候要减前一个
       // 大于的
       const m = dp[j] - dp[i - 1];
-      // console.log(n,m)
-      // 看是否满足情况，满足+，不满足继续循环
       if ((n + m + 1) % 2 == 1) {
         if (m == n) res++;
       } else {
@@ -173,25 +147,18 @@ function countSubarrays(nums: number[], k: number): number {
 // 可以考虑用map进行记录，即记录某个数量时，k之前的连续数组有多少个满足的情况
 // 比较费脑子了
 // 简单来说，不要浪费现有资源
-function countSubarrays(nums: number[], k: number): number {
+function countSubarrays_3(nums: number[], k: number): number {
   const n = nums.length;
   let kI = 0; // 记录k的位置
-  for (let i = 0; i < n; ++i)
-    if (k == nums[i]) {
-      kI = i;
-      break;
-    }
-
+  while(nums[kI]!=k) kI++;
   // 将nums的值转化为1、-1和0，便于后续计算
   // 注意let of的方法是只读的，无法修改值
   // for (let x of nums) {
   //   if (x > k) x = 1;
   //   else if (x < k) x = -1;
   // }
-  nums = nums.map((x) => x > k ? 1 : -1); // map不会修改原本数组
+  nums = nums.map((x) => x > k ? 1 : -1); // map不会修改原本数组，需要赋值
   nums[kI] = 0;
-  // console.log(nums);
-
   let dp: number[] = Array(n + 1); // 记录个位置大于小于的情况
   dp[0] = 0;
   for (let i = 1; i <= n; ++i) dp[i] = dp[i - 1] + nums[i - 1];
