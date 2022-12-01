@@ -1887,6 +1887,8 @@ console.log(-7 % -3); // -7/-3 = 2，余数=-7--3*2 = -1
 | count | 计数 | cnt    |
 | odd | 奇数 | o    |
 | even | 偶数 | e    |
+| recursion | 遍历 | recur    |
+| high | 偶数 | e    |
 
 ### vscode 使用技巧
 
