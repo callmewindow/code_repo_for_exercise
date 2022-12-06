@@ -192,7 +192,8 @@ for (const [a, b, dis] of roads) {
 }
 ```
 
-这里需要注意||和|的区别，对于||是在前面的为false时返回第二个值，|则是位运算会直接对两侧的值进行或运算，区别如下：
+这里需要注意||和|的区别，对于||是在前面的为 false 时返回第二个值，|则是位运算会直接对两侧的值进行或运算，区别如下：
+
 ```typescript
 const a = 0 || 1; // a = 1，因为0即false，返回第二个1
 const b = 0 | 1; // b = 1，因为0或1等于1，所以b=1
@@ -205,10 +206,11 @@ const b = 0 | 1; // b = 1，因为0或1等于1，所以b=1
 const cur = city.shift() || 1；
 ```
 
-###### 用true和false赋值
+###### 用 true 和 false 赋值
 
-在一些情况下通常有基于条件的情况来对变量进行调整，例如if(a>1) b+=1
-此时便可结合true false和1 0的关系，利用Number对他们进行转化，进而上述语句可优化如下：
+在一些情况下通常有基于条件的情况来对变量进行调整，例如 if(a>1) b+=1
+此时便可结合 true false 和 1 0 的关系，利用 Number 对他们进行转化，进而上述语句可优化如下：
+
 ```typescript
 b += Number(a > 1)； // 如果条件符合，b+=1，不符合则b+=0
 // 该方法同样适合多条件的判断
@@ -303,6 +305,13 @@ x = null; // 编译正确
 
    该性质可以利用，例如这种同步修改数组，可以实现函数间值的同步
    也可能导致问题，例如没有复制一份出来直接修改，导致原本传入函数的不想被修改的值发生改变
+
+   对于引用很容易在高维数组中被遗忘，对于高维数组，如下：
+   ```typescript
+   let arr = [[1,2],[3,4]];
+   let b = arr[0]; // 这里b同样是对arr[0]的浅拷贝，因为arr[0]同样是数组
+   b[1] = 100; // 通过修改b的值也会导致arr的值发生改变
+   ```
 
 ### 数据类型
 
@@ -845,6 +854,7 @@ const graph = Array.from({ length: n + 1 }, () => new Map());
 
    ```typescript
    let arrB = ["a", "b"];
+   // 使用元组接收值的可读性更高
    for (let [iB, vB] of arrB.entries()) {
      console.log(iB, vB); // [0,'a'],[1,'b']
    }
@@ -1252,9 +1262,16 @@ const map: Map<string, string[]> = new Map([
 
 ###### 增加元素
 
-1. set()
+1. set(key,val)
 
    为 map 新增或修改现有的键值对
+   直接 set 键+值即可，如果不存在相当于新建，存在则是修改
+
+###### 删除元素
+
+1. delete(key)
+
+   map 删除值只能基于 key 来进行，直接删除对应的键值对
 
 ##### 获取
 
@@ -1282,6 +1299,13 @@ const map: Map<string, string[]> = new Map([
    bMap.set(tmp, tmpV == undefined ? 1 : tmpV + 1); // 根据情况看新增1还是修改
    // 上述性质同样可以在使用数组替换map时运用，通过直接判断相应位置的值来进行修改和初始化
    bMap[tmp] = bMap[tmp] == undefined ? 1 : bMap[tmp] + 1; // 仅可运用在键是数字且不会太大时
+   ```
+
+   更进一步的可以利用或判断来直接对 undefined 进行处理，示例如下：
+
+   ```typescript
+   let valFreq = (freq.get(val) || 0) + 1; // 如果是undefined则为0，否则是旧+1
+   freq.set(val, valFreq);
    ```
 
 ###### 遍历
@@ -1665,7 +1689,7 @@ function lcm(a: number, b: number): number {
 
 3. 作用对象有限
 
-   位运算一般仅可对数字使用，对true和false虽然类比于1和0，但是使用时还是需要转化一下
+   位运算一般仅可对数字使用，对 true 和 false 虽然类比于 1 和 0，但是使用时还是需要转化一下
 
 #### 基础
 

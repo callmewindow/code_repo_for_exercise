@@ -27,15 +27,15 @@ function permutation(s: string): string[] {
       if (!res.includes(newStr)) res.push(newStr); // 这是极特殊情况的判断
       ch = str[j];
     }
-    // // 判断和末尾的关系看是否加在末尾
-    // // 注意这里也要判断，直接合并到循环里
+    // 判断和末尾的关系看是否加在末尾
+    // 注意这里也要判断，直接合并到循环里
     // if(last != ch) res.push(str+last);
   }
   return res;
 };
 
 // include原来这么快，不人工跳过重复字符也速度一样
-function permutation(s: string): string[] {
+function permutation_1(s: string): string[] {
   // 这里是找出字符串的全排列，并且可能有重复的字符
   // 要找出三个字符的全排列，只需得到两个字符的全排列，然后分别将第三个字符插在第0，1，2个位置即可
 

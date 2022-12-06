@@ -14,7 +14,6 @@ class FreqStack {
 
   push(val: number): void {
     this.nums.push(val);
-    const len = this.nums.length;
     let valCnt = this.map.get(val);
     this.map.set(val, valCnt == undefined ? 1 : valCnt + 1);
     // 更新最大值
@@ -48,7 +47,6 @@ class FreqStack {
     let maxN = this.map.get(this.maxNum), maxI = this.nums.lastIndexOf(this.maxNum);
     for(let num of this.map.entries()){
       const numI = this.nums.lastIndexOf(num[0]);
-      // console.log(num);
       // num是key和value组成的结构，0是key：num，1是value：cnt和i
       if(num[1] > maxN || (num[1] == maxN && numI > maxI)){
         this.maxNum = num[0];
@@ -68,7 +66,7 @@ class FreqStack {
 
 // 没想到最后是原本的频率当作键的方法对了，可以节省查找时间
 // 用数组实现有点臃肿，所以直接map
-class FreqStack {
+class FreqStack_1 {
   private freq: Map<number, number>;
   private freqGroup: Map<number, number[]>;
   private maxFreq: number;

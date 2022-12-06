@@ -42,7 +42,7 @@ class MaxQueue {
 }
 
 // 优化替换方式，直接抛弃没有作用的部分，仅保留当前区域的最大值
-class MaxQueue {
+class MaxQueue_1 {
   private nums: number[];
   private maxNums: number[];
   constructor() {
@@ -57,7 +57,6 @@ class MaxQueue {
 
   push_back(value: number): void {
     // 从末尾开始处理小于value的值
-    const len = this.maxNums.length;
     // 数组的-1脚标不是最后一位
     while (this.maxNums.length > 0 && this.maxNums[this.maxNums.length - 1] < value) this.maxNums.pop();
     this.maxNums.push(value); // 将自己作为最大值替换掉前面小于自己的值，只有当自己离开才移除这个value

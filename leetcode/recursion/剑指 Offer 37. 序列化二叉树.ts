@@ -1,20 +1,12 @@
 // https://leetcode.cn/problems/xu-lie-hua-er-cha-shu-lcof/
 // 用数量标记节点数，以在反序列化时拆分左右
 /**
- * Definition for a binary tree node.
- * function TreeNode(val) {
- *     this.val = val;
- *     this.left = this.right = null;
- * }
- */
-
-/**
  * Encodes a tree to a single string.
  *
  * @param {TreeNode} root
  * @return {string}
  */
- var serialize = function (root) {
+var serialize = function (root) {
   // 序列化后关键是可以基于序列化的字符串恢复
   // 即这里输出的字符串可以被用来建立一个二叉树
   // 注意可能有重复数值和超过9的数字，因此值之间需要用符号分隔

@@ -19,7 +19,7 @@ function dicesProbability(n: number): number[] {
     for (let i = cnt - 1; i <= maxCnt - 6; i++)
       for (let j = 1; j <= 6; j++)
         dp[i + j] += res[i] * res[0]; // 一定符合范围，直接增加即可
-        // dp[i + j] += res[i];
+    // dp[i + j] += res[i];
     // for (let i = cnt; i <= maxCnt; i++) dp[i] *= res[0]; // 这样统一乘可以减少运算次数，更快
     // 更新循环
     res = dp;
@@ -30,7 +30,7 @@ function dicesProbability(n: number): number[] {
 };
 
 // 遍历n的数组来实现，并统一处理乘法
-function dicesProbability(n: number): number[] {
+function dicesProbability_1(n: number): number[] {
   let res = Array(7).fill(1 / 6); // 初始化1个骰子的数组，多一位使i的概率放在i位置
   let cnt = 2;
   while (cnt <= n) {
@@ -42,14 +42,14 @@ function dicesProbability(n: number): number[] {
     // res的情况从cnt-1一直到(cnt-1)*6
 
     // 为了减少循环，对dp进行循环拆分
-    for (let i = cnt; i <= maxCnt; i++){
+    for (let i = cnt; i <= maxCnt; i++) {
       // cnt由1～6和一个cnt-1范围的数组成，看最少以及最大可以减到多少
       const maxMinus = i - (cnt - 1) >= 6 ? 6 : i - (cnt - 1);
       const minMinus = i - (maxCnt - 6) <= 1 ? 1 : i - (maxCnt - 6);
-      for (let j = minMinus; j <= maxMinus; j++) dp[i] += res[i-j];
+      for (let j = minMinus; j <= maxMinus; j++) dp[i] += res[i - j];
       dp[i] *= 1 / 6; // 统一乘1/6
     }
-    
+
     // 更新循环
     res = dp;
     cnt++;

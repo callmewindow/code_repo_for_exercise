@@ -14,7 +14,7 @@ function recur(node: number[], i: number, j: number): boolean {
   if (i >= j) return true;
   let m = i;
   while (node[m] < node[j]) m++;
-  // if(node[m] == node[j]) 说了不会相等，因此判断即可
+  // if (node[m] == node[j]) 说了不会相等，因此判断即可
 
   // 注意因为需要全部大于j，需要保留遍历的坐标来判断
   let k = m;
