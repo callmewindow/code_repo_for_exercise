@@ -1,3 +1,4 @@
-const a = 0 || 1; // a = true
-const d = 'a' | 'c';
-console.log(a,d)
+enum Str {
+  Str1 = 'this is string one',
+  Str2 = 'this is string two'
+}

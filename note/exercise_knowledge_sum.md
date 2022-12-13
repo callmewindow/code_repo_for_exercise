@@ -54,15 +54,58 @@ css 同样采取 2 个缩进
 
 #### 变量声明
 
-##### let、var、const
-
 声明变量一般都尽量使用 let 和 const，而不会使用 var
 let 只会在当前代码块起作用需要注意声明位置，例如在 if 块中声明，离开了 if 就无法访问到 let 变量了
 const 一般用于声明一些不会被改变的量，例如全局使用的参数，此时放置在函数外即可
 
-具体场景分析：
+##### let 和 const
 
-1.
+作用域都是所处的代码块，例如函数、if，for 便是一个代码块
+
+const 其实就相当于 let constant
+
+const 应该被更多的使用，因为他可以提高运行时速度，一般来说需要使用 let 的情况只有当需要延迟变量的初始化或需要对变量的值/引用重新分配时
+
+##### const 和 readonly
+
+都是用来声明不可改变的变量
+
+对比如下：
+| 对比内容 | const | readonly |
+| --------- | ---- | ----- |
+| 来源 | ES6 | - |
+| 使用场景 | 用于变量 | 更加严谨，常在 interface 、 Class 、 type 以及 array 和 tuple 类型中使用它，也可以用来定义一个函数的参数 |
+| 何时检查 | 运行时检查 | 编译时检查 |
+| 如何声明 | 声明时必须初始化，不能后续赋值（复杂数据结构后续介绍） | 可以在修饰后再去定义初始值 |
+| 修饰后的可修改性 | 保证的不是变量的值不得改动，而是变量指向的那个内存地址不得改动，例如使用 const 变量保存的数组，可以使用 push ， pop 等方法，这里的区别可见示例 1 | readonly 修饰属性后，可以确保自身不能修改属性，但是当你把这个属性交给其它并没有这种保证的使用者（允许出于类型兼容性的原因），他们能改变，具体可见示例 2 |
+
+示例 1：const 修饰后它指向的引用不可变
+
+```typescript
+// const作用于高级数据结构时可以保护变量引用，无法被修改为另一个引用
+const foo = { bar: 123 };
+foo = { bar: 456 }; // ERROR : Left hand side of an assignment expression cannot be a constant
+
+// 但是const允许对象的子属性发生改变
+const foo = { bar: 123 };
+foo.bar = 456; // Allowed!
+console.log(foo); // { bar: 456 }
+```
+
+示例 2：readonly 先修饰再赋值，进而被修改
+
+```typescript
+const foo: {
+  readonly bar: number;
+} = {
+  bar: 123,
+};
+function iMutateFoo(foo: { bar: number }) {
+  foo.bar = 456;
+}
+iMutateFoo(foo);
+console.log(foo.bar); // 456
+```
 
 ##### 引用库中的函数
 
@@ -307,8 +350,12 @@ x = null; // 编译正确
    也可能导致问题，例如没有复制一份出来直接修改，导致原本传入函数的不想被修改的值发生改变
 
    对于引用很容易在高维数组中被遗忘，对于高维数组，如下：
+
    ```typescript
-   let arr = [[1,2],[3,4]];
+   let arr = [
+     [1, 2],
+     [3, 4],
+   ];
    let b = arr[0]; // 这里b同样是对arr[0]的浅拷贝，因为arr[0]同样是数组
    b[1] = 100; // 通过修改b的值也会导致arr的值发生改变
    ```
@@ -387,63 +434,7 @@ x = null; // 编译正确
 
 4. 枚举 enum
 
-   可用于定义一个数值集合，可通过点运算符标记自己是哪个值
-
-   ```typescript
-   enum Color {
-     Red,
-     Green,
-     Blue,
-   }
-   let c: Color = Color.Green;
-
-   //默认情况下，从0开始为元素编号。 你也可以手动的指定成员的数值。
-   //例如，我们将上面的例子改成从 1开始编号：
-   enum Color {
-     Red = 1,
-     Green,
-     Blue,
-   }
-   let c: Color = Color.Green;
-
-   //或者，全部都采用手动赋值：
-
-   enum Color {
-     Red = 1,
-     Green = 2,
-     Blue = 4,
-   }
-   let c: Color = Color.Green;
-
-   //枚举类型提供的一个便利是你可以由枚举的值得到它的名字。
-   //例如，我们知道数值为2，但是不确定它映射到Color里的哪个名字，我们可以查找相应的名字：
-
-   enum Color {
-     Red = 1,
-     Green,
-     Blue,
-   }
-   let colorName: string = Color[2];
-
-   console.log(colorName); // 显示'Green'因为上面代码里它的值是2
-   ```
-
-   如果 A 的值是被计算出来的。注意注释部分，如果某个属性的值是计算出来的，那么它后面一位的成员必须要初始化值。
-
-   ```typescript
-   const getValue = () => {
-     return 0;
-   };
-
-   enum List {
-     A = getValue(),
-     B = 2, // 此处必须要初始化值，不然编译不通过
-     C,
-   }
-   console.log(List.A); // 0
-   console.log(List.B); // 2
-   console.log(List.C); // 3
-   ```
+   具体可见“数据类型”部分的“枚举 Enum”
 
 5. 错误 never
 
@@ -1321,18 +1312,174 @@ const map: Map<string, string[]> = new Map([
 
 ##### 初始化
 
+可用于定义一个数值集合，可通过点运算符标记自己是哪个值
+
 枚举的定义和其他不太相同，是以创建类的方式创建的，直接 enum 变量名 {元素}
-注意元素不需要加双引号，直接字符串即可，示例图下：
+注意元素不需要加双引号，直接字符串即可，示例如下：
+
+直接初始化默认是一个数字枚举，即枚举里所有属性的值都是数字类型
+
+当枚举里的属性没指定具体值时，默认值是从 0 开始依次排列，你也可以自己指定具体值，剩下的也是依次递增
 
 ```typescript
-enum msg {
-  type,
-  color,
-  name,
-} // 枚举匹配内容
+enum Color {
+  Red,
+  Green,
+  Blue,
+}
+let c: Color = Color.Green; // 0
+// 枚举的第一个成员会被赋予值0
+// 后续成员如果没有初始化都默认是前一个成员的值+1
 ```
 
-##### 基础使用
+###### 枚举成员类型
+
+枚举成员可以分为常量的和需要计算的
+
+常量成员：
+
+1. 没有设置初始值
+2. 对已有枚举成员的引用
+3. 常量的表达式
+
+常量枚举成员会在编译时计算出结果，然后以常量的形式，出现在运行时环境
+
+非常量，即需要计算的：
+即通过调用函数来初始化值的，它们的值不会在编译阶段计算，而是保留到程序的执行阶段
+
+区别如下：
+
+```typescript
+enum Char {
+  // 常量枚举成员
+  a,
+  b = Char.a,
+  c = 1 + 3,
+  // 非常量枚举成员
+  d = Math.random(),
+  e = "hello".length,
+}
+```
+
+###### 修改枚举成员初始值
+
+1. 初始化成员值
+
+```typescript
+// 例如，我们将上面的例子改成从 1开始编号，后续也会从1开始计算
+enum Color {
+  Red = 1,
+  Green, // 2
+  Blue, // 3
+}
+// 或者，全部都采用手动赋值也可以
+enum Color {
+  Green = 2,
+  Blue = 4,
+}
+```
+
+2. 调用函数或变量来初始化
+
+即如果 A 的值是被计算出来的。注意注释部分，如果某个属性的值是计算出来的，那么它后面一位的成员必须要初始化值。
+
+```typescript
+const getValue = () => 0;
+enum List {
+  A = getValue(), // 0
+  B = 2, // 此处必须要初始化值，不然编译不通过
+  C, // 3
+}
+
+// 注意如果是普通的计算式，例如1+1，后续仍然可以自行运算
+enum color {
+  a = 1 + 1, // 2
+  b, // 3
+}
+```
+
+##### 特殊枚举
+
+###### 常量枚举
+
+enum 在正常情况下会被编译为一个对象，进而在调用时会去查找枚举中对应的内容，可以当作对象来使用
+而 const enum 是 ts 中新增的类型，相当于完全嵌入的枚举，对于 const enum，他保留了枚举的可读性，但是 const 枚举会在 typescript 编译期间被删除，const 枚举成员在使用的地方会被内联进来，避免额外的性能开销
+由此可得，当不需要编译后的代码，枚举通常只是用来提高可读性，因此 ts 中用 常量枚举 会有更好的性能
+
+枚举和常量枚举的编译区别
+
+```typescript
+enum Color {
+  Red,
+}
+var c1 = Color.Red;
+// 会被编译成 JavaScript 中的 var c1 = Color.Red
+// 即在运行执行时，它将会查找变量 Color 和 Color.Red
+
+const enum Color {
+  Red,
+}
+var c2 = Color.Red;
+// 会被编译成 JavaScript 中的 var c2 = 0
+// 在运行时已经没有 Color 变量
+```
+
+###### 字符串枚举
+
+字符串枚举要求每个字段的值都必须是字符串字面量，或者是另外一个字符串枚举成员
+
+因此每一个字符串枚举的成员，都需要进行初始化，示例如下
+
+```typescript
+enum Str {
+  Str1 = "this is string one",
+  Str2 = "this is string two",
+  Str3 = Str1, // 这里引用了Str1的值
+  Str4, // 会报错
+}
+```
+
+###### 异构枚举
+
+枚举通过初始化其实也可以数字和字符串混合使用，即异构枚举，但是容易混淆，不推荐使用
+
+##### 调整
+
+枚举中的成员一般是不能在定义后被修改值的，他们都是 read-only 的，即使是函数声明的，也会基于函数的默认参数来调用它，基于返回值来初始化
+
+##### 获取
+
+###### 映射
+
+枚举一般使用方式即映射,通过 Enum\[key\] 或者 Enum.key 的方式获取到对应的值
+
+```typescript
+enum Color {
+  Red,
+}
+console.log(Color.Red); // 0
+console.log(Color["Red"]); // 0
+```
+
+###### 反向映射
+
+在 ts 中还支持反向映射，即可以通过值来获取键，不过反向映射只支持数字枚举
+
+基于此可搭建一些复杂内容，示例如下
+
+```typescript
+enum Status {
+  Success = 200,
+  NotFound = 404,
+  Error = 500,
+}
+
+console.log(Status.Success); // 200
+console.log(Status[200]); // Success
+console.log(Status[Status.Success]); // Success
+```
+
+##### 应用
 
 基础使用即将字符串和数字对应起来，示例如下：
 
@@ -1812,7 +1959,7 @@ console.log(~1); // 1 ~01 -> 10 -2
    结合这个 floor 的性质，可以通过对负数+1 来实现处理，即(-3+1) >> 1 == -1
    也不会影响偶数：(-4+1) >> 1 == -2
 
-   利用这个性质，比如要计算正数的整数，便可以直接右移，而不需要再调用 Math 函数
+   利用这个性质，比如要计算正数除以 2 的 n 次幂后的整数，便可以直接右移，而不需要再调用 Math 函数
 
 ##### 无符号右移 >>>
 
@@ -2099,6 +2246,10 @@ console.log(-7 % -3); // -7/-3 = 2，余数=-7--3*2 = -1
 | graph     | 低   | lo    |
 | visit     | 低   | lo    |
 | word      | 低   | lo    |
+| length    | 低   | lo    |
+| width     | 低   | lo    |
+| height    | 低   | lo    |
+| depth     | 低   | lo    |
 
 ### vscode 使用技巧
 
