@@ -3,7 +3,7 @@
 function massage(nums: number[]): number {
   // dp记录当前接受预约能得到的总长度
   const n = nums.length;
-  if(!n) return 0;
+  if (!n) return 0;
   let dp = new Array(n).fill(0);
   for (let i = n - 1; i >= 0; i--) {
     // 如果当前接受了就结束了，则就等于自己
@@ -12,7 +12,7 @@ function massage(nums: number[]): number {
     if (i + 2 > n - 1) dp[i] = nums[i];
     else {
       // 如果没有超过，则去选择最优的
-      dp[i] = nums[i] + Math.max(...dp.slice(i+2)); // 其实因为是倒叙，不拆分也可以
+      dp[i] = nums[i] + Math.max(...dp.slice(i + 2)); // 其实因为是倒叙，不拆分也可以
     }
     // console.log(dp);
   }

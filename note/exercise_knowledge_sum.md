@@ -472,6 +472,18 @@ x = null; // 编译正确
    }
    ```
 
+6. 布尔类型 Boolean
+
+   布尔类型即真true和假false
+   通过Boolean可将其他类型转为布尔类型，例如字符串、数字
+   转化规则即：
+   1、数字：0转化为false，其他值都转化为true
+   2、字符串：都转化为true，即使ascii码为0的空字符，也是true
+
+   应用：
+   1. 结合位运算将运算结果转为true或false来返回
+   位运算一般结果为0或1，此时只需套上一层Boolean便会转为true或false
+
 #### 特殊类型
 
 1. bigint

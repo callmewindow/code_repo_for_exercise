@@ -17,13 +17,14 @@ function countDigitOne(n: number): number {
     bp = Math.floor(bp / 10);
     cnt++;
   }
-  console.log(cnt);
+  // console.log(cnt);
   let i = 0;
   while (i < cnt) {
     let high = Math.floor(n / mul10); // 记录超过mul10的高位
     let low = n % mul10; // 记录低于mul10的低位
     let cur = high % 10; // 记录mul10位置的数，判断，0，1，大于1
     high = Math.floor(high / 10); // 保留cur之前的部分
+
     if (cur > 1) {
       ans += ((high + 1) * mul10); // 超过1说明1的mul10个都被取到了，直接加
     } else if (cur == 1) {
@@ -35,6 +36,7 @@ function countDigitOne(n: number): number {
       // 因为遍历了从1000到1999
       ans += high * mul10;
     }
+
     mul10 *= 10;
     i++;
   }

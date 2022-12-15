@@ -32,7 +32,7 @@ class LRUCache {
       // 如果满了则删除最近未使用，即order 0
       if (this.memOrder[this.maxSize - 1] != undefined) {
         this.keyMap.delete(this.memOrder[0]); // map也要删除
-        this.memOrder.splice(0, 1);
+        this.memOrder.splice(0, 1); // 这里删除后长度也会减一，所以不用额外处理
       }
       this.memOrder.push(key); // 放在最后表示最近使用
     }
