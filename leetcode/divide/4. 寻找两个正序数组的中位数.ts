@@ -12,7 +12,7 @@ function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
   while (i1 < len1 && i2 < len2) {
     // 因为当i1+i2为0的时候，其实已经过了两个值，所以都需要+1才能和mid对应
     if (i1 + i2 + 1 == mid - 1 || i1 + i2 + 1 == mid) {
-      console.log(mid, i1, nums1[i1], i2, nums2[i2], numNow)
+      // console.log(mid, i1, nums1[i1], i2, nums2[i2], numNow)
       midNum.unshift(numNow == 1 ? nums1[i1] : nums2[i2]);
       if (i1 + i2 == mid) break;
     }
