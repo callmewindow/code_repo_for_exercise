@@ -10,14 +10,14 @@ function checkIfPangram(sentence: string): boolean {
 };
 
 // 直接基于字符生成集合来判断
-function checkIfPangram(sentence: string): boolean {
-  return new Set(sentence).size===26;
+function checkIfPangram_1(sentence: string): boolean {
+  return new Set(sentence).size === 26;
   // return new Set(sentence.split("")).size===26;
 };
 
 // 26个字母，因此可以二进制来解决，用位数来记录是否出现
 // 位运算用二进制保存字母是否出现过
-function checkIfPangram(sentence: string): boolean {
+function checkIfPangram_2(sentence: string): boolean {
   let state = 0;
   for (let i = 0; i < sentence.length; i++) {
     const c = sentence[i];

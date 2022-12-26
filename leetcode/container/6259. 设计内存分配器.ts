@@ -79,7 +79,7 @@ class Allocator {
  */
 
 // 优化上述代码结构
-class Allocator {
+class Allocator_1 {
   private mem: number[];
   private memMap: Map<number, Array<number>>; // 记录块对应的内存位置
   private memPos: number; // 记录可以被分配的最靠前的脚标
@@ -143,7 +143,7 @@ class Allocator {
     // 如果最小位置小于当前可分配内存位置，则更新
     if (minPos < this.memPos) this.memPos = minPos;
     this.memMap.delete(mID); // 删除对应的记录
-    
+
     return posN;
   }
 }
