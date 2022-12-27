@@ -26,10 +26,11 @@ function canChoose(groups: number[][], nums: number[]): boolean {
 };
 
 // kmp解法
-function canChoose(groups: number[][], nums: number[]): boolean {
+function canChoose_1(groups: number[][], nums: number[]): boolean {
   let k = 0;
   for (let i = 0; i < groups.length; i++) {
-    k = find(nums, k, groups[i]);
+    // k记录匹配到的num的起始点
+    k = findByKMP(nums, k, groups[i]);
     if (k == -1) {
       return false;
     }
@@ -38,7 +39,8 @@ function canChoose(groups: number[][], nums: number[]): boolean {
   return true;
 }
 
-function find(nums: number[], k: number, g: number[]): number {
+function findByKMP(nums: number[], k: number, g: number[]): number {
+  // g表示当前要匹配的模式串，kmp寻找内容
   let m = g.length, n = nums.length;
   if (k + g.length > nums.length) {
     return -1;

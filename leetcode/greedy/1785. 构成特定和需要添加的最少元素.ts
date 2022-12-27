@@ -6,7 +6,7 @@ function minElements(nums: number[], limit: number, goal: number): number {
   let inter = Math.abs(sum - goal); // 都看作正数来处理
   // inter大于limit就加上一个limit，小于则加上他自身即可
   let res = Math.floor(inter / limit);
-  res += inter%limit == 0 ? 0 : 1;
+  res += inter % limit == 0 ? 0 : 1;
   // 其实就是看inter能被多少个limit整除，直接加上limit-1可以快速得到结果
   // 例如4/5需要+1，此时4+4/5 = 1.x，向下取整即1
   // 例如5/5需要也是1，此时4+4/5 = 1.x，还是1

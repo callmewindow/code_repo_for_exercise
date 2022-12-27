@@ -7,6 +7,7 @@ function maxScore(nums: number[]): number {
   const dp = new Array(1 << m).fill(0);
   // 记录各对之间的公约数，用于判断
   const gcdTmp = new Array(m).fill(0).map(() => new Array(m).fill(0));
+  
   for (let i = 0; i < m; ++i)
     for (let j = i + 1; j < m; ++j)
       gcdTmp[i][j] = gcd(nums[i], nums[j]);
@@ -25,12 +26,13 @@ function maxScore(nums: number[]): number {
       if (((1 << i) & s) !== 0) { // 移动1看s是否为1更好理解
         // 找到第一个准备抛弃的数i
         for (let j = i + 1; j < m; ++j) {
-          // if (((s >> j) & 1) !== 0) {
           if (((1 << j) & s) !== 0) {
             // 找到第二个准备抛弃的数j
+
             let moveIJ = dp[(s ^ (1 << i)) ^ (1 << j)]; // s用抑或去除i和j，得到不包含i和j的最大值
             let gcdIJ = Math.floor(t / 2) * gcdTmp[i][j]; // 记录ij去除得到的分数，floor确保是整数（防止ts抽风）
             dp[s] = Math.max(dp[s], moveIJ + gcdIJ); // 看去除哪个i和j时，s选择的情况分数更高
+          
           }
         }
       }
@@ -41,6 +43,7 @@ function maxScore(nums: number[]): number {
 
 function gcd(num1: number, num2: number): number {
   while (num2 !== 0) {
+    // [num1, num2] = [num2, num1 % num2];
     const temp = num1;
     num1 = num2;
     num2 = temp % num2;

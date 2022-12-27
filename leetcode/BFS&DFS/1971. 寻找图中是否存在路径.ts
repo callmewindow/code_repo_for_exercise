@@ -12,18 +12,19 @@ function validPath(n: number, edges: number[][], source: number, destination: nu
   // console.log(graph);
   // 检查是否有0到n-1的路径
   let vis = Array(n); // 没访问是undefined
-  return find(source, destination, vis, graph);
+  return find_1(source, destination, vis, graph);
 };
-function find(start: number, end: number, vis: number[], graph: Map<number, number[]>): boolean {
+function find_1(start: number, end: number, vis: number[], graph: Map<number, number[]>): boolean {
   if (start == end) return true; // 已经到终点了就返回
   vis[start] = 1;
   const next = graph.get(start); // 有可能没有边
-  if (next == [] || !next) return false;
+  // if (next == [] || !next) return false; // ts用引用比较值
+  if (!next || next.length == 0) return false; // 判断是否为空使用length，并且先判断是否未定义
   for (let n of next) {
     if (n == end) return true;
     if (!vis[n]) {
       // 没访问过则从n开始尝试
-      if (find(n, end, vis, graph)) return true;
+      if (find_1(n, end, vis, graph)) return true;
     }
     // 访问过则继续看
   }

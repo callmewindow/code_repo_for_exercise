@@ -26,7 +26,7 @@ function strStr(haystack: string, needle: string) {
 };
 
 // 力扣官方kmp解法
-function strStr(haystack: string, needle: string) {
+function strStr_1(haystack: string, needle: string) {
   const n = haystack.length, m = needle.length;
   if (m === 0) return 0;
   const next = new Array(m).fill(0); // 0默认回到模式串开头

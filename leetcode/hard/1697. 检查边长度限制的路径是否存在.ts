@@ -25,9 +25,7 @@ function distanceLimitedPathsExist(n: number, edgeList: number[][], queries: num
 };
 
 function find(uf: number[], x: number): number {
-  if (uf[x] === x) {
-    return x;
-  }
+  if (uf[x] === x) return x;
   // return uf[x] = find(uf, uf[x]); // 同时做赋值和返回
   uf[x] = find(uf, uf[x]);
   return uf[x];

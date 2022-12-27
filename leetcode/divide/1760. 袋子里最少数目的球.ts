@@ -7,7 +7,7 @@ function minimumSize(nums: number[], maxOperations: number): number {
     const y = (left + right) >> 1; // 取中点值
     let ops = 0; // 要都不超过y需要的拆分次数
     for (const x of nums) {
-      ops += Math.floor((x - 1) / y);
+      ops += Math.floor((x - 1) / y); // 看如果要将所有x拆分为小于等于y的情况需要多少次操作
       // 计算当前num是否需要拆分，-1是为了确保恰好为倍数时得到正确的拆分次数
     }
     // 符合条件则继续找更小的y

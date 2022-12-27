@@ -3,7 +3,7 @@
 // 此时不利于计算移动次数，错误
 function minMoves(nums: number[], k: number): number {
   // 如果0或1连续，那么记录他们的长度n，只保留一个数，将问题简化
-  let newN = [];
+  let newN: number[] = [];
   const n = nums.length;
   // 对10000011，3可以简化为1-52，3
   let flag: number; // 判断当前连续的是0还是1
@@ -30,11 +30,10 @@ function minMoves(nums: number[], k: number): number {
   return 1;
 };
 
-// 正确的简化，统计连续0的数量，忽视1
-// 基于0的数量便可计算出移动一个1到另一个1身边所需的步数
+// 正确的简化，统计连续0的数量，忽视1，基于0的数量便可计算出移动一个1到另一个1身边所需的步数
 function getZeros(nums: number[]): number[] {
   const n = nums.length;
-  let zeros = [];
+  let zeros: number[] = [];
   let i = 0;
   while (!nums[i] && i < n) i++; // 找到第一个1
   while (i < n) {
@@ -79,11 +78,11 @@ function getRangeSum(pre: number[], left: number, right: number): number {
   // 所以得到脚标之间的范围值则需要统一+1，即调整为right+1减去left+1-1
   return pre[right + 1] - pre[left];
 }
-function minMoves(nums: number[], k: number): number {
+function minMoves_1(nums: number[], k: number): number {
   // 根据1 <= k <= sum(nums)，nums中一定有1存在
   let zeros = generateZeros(nums); //第1步：生成zeros
   let pre = generatePreSum(zeros); //第2步：生成移动次数的前缀和数组
-  console.log(zeros, pre);
+  // console.log(zeros, pre);
 
   let cost = 0; //第3步：cost记录每一个窗口的值第一个窗口的解
   // zeros记录的两个1之间的0数量，如果要k个1，需要k-1个zeros的数，脚标范围即i到i+k-2
