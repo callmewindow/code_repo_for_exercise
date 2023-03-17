@@ -1789,3 +1789,5 @@ obj.addCar(carType);
 2. 和字符串来回替换
    通过 toString 可以将数字转为某些进制的数字对应的字符串
    Number 则相当于直接将字符串两侧引号去除，不会根据对应进制进行转化，而是会默认为 64 位的十进制浮点数进行转化
+
+<link rel="stylesheet" type="text/css" href="../assets/auto_title_number.css">
