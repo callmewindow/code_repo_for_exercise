@@ -584,7 +584,13 @@ console.log(1.2e-3);
 let arr1 = new Array(5).fill(0);
 // 如果不fill那么数组的所有元素都会是未定义，即undefined
 // undefined也可以主动赋值给数组，但是数组类型声明时需要声明多类型
+// 还可以接受第二个和第三个参数，用于指定填充的起始位置和结束位置
+// 起始开始，结束之前
+['a', 'b', 'c'].fill(7, 1, 2)
+// ['a', 7, 'c']
 ```
+
+注意fill对对象是浅拷贝
 
 ##### from 方法
 
@@ -746,6 +752,17 @@ const graph = Array.from({ length: n + 1 }, () => new Map());
    // 如果不使用map还需要多层for循环遍历
    ```
 
+4. flat
+   将数组扁平化处理，返回一个新数组，对原数据没有影响
+
+   [1, 2, [3, 4]].flat()
+   // [1, 2, 3, 4]
+
+   默认只会“拉平”一层，如果想要“拉平”多层的嵌套数组，可以将flat()方法的参数写成一个整数，表示想要拉平的层数，默认为1
+
+   flatMap()方法对原数组的每个成员执行一个函数相当于执行Array.prototype.map()，然后对返回值组成的数组执行flat()方法。该方法返回一个新数组，不改变原数组
+   注意是先对原来的成员执行函数，然后对结果进行flat处理，而不是先flat
+
 #### 获取
 
 ##### 寻找某类值
@@ -753,6 +770,8 @@ const graph = Array.from({ length: n + 1 }, () => new Map());
 1. includes(item)
 
    返回 item 是否存在于当前数组中
+
+   第二个参数为起始位置，默认为0，当是负数时表示倒数的第几个，-1就是最后一个开始
 
 2. indexOf(item) / lastIndexOf(item)
 
@@ -763,9 +782,21 @@ const graph = Array.from({ length: n + 1 }, () => new Map());
 
 3. find() / findIndex()
 
+   find()用于找出第一个符合条件的数组成员
+   findIndex返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1
+
+   两个方法都可以接受第二个参数，用来绑定回调函数的this对象。
+   ```ts
+   function f(v){
+   return v > this.age;
+   }
+   let person = {name: 'John', age: 20};
+   [10, 12, 26, 15].find(f, person);    // 26
+   ```
+
 ##### 遍历
 
-1. for..of
+1. for..of 和 for..in
 
    通过 of 可对数组内容进行依次获取
    但是这里只是对元素的获取，获取的值可以被使用，但是如果尝试修改，是不会对原数组产生影响的，如果需要修改，需要使用正常的基于脚标的修改，或者 map
@@ -789,6 +820,11 @@ const graph = Array.from({ length: n + 1 }, () => new Map());
      graph[next].set(cur, w);
    }
    ```
+
+   只要一个对象部署了Symbol.iterator属性，就被视为具有迭代器，可以使用for of
+   for of相当于基于迭代器去进行一内容的获取，一般情况都是完整的内容
+
+   对于for in，循环返回的都是数据结构的键值名，例如对象的key，数组的index，甚至可以遍历原型上的值和手动添加的其他键
 
 2. every(func)
 
@@ -1673,6 +1709,40 @@ obj.addCar(carType);
 ```
 
 #### 高级操作
+
+### 对象 object
+
+对应着许多类型，可以包含很多内容，通过{}可以声明
+
+ES6中，当对象键名与对应值名相等的时候，可以进行简写
+
+const baz = {foo:foo}
+
+// 等同于
+const baz = {foo}
+
+定义方法时也需要先表达键名，然后再声明方法
+例如：
+```ts
+const o = {
+  method() {
+    return "Hello!";
+  }
+};
+
+// 等同于
+
+const o = {
+  method: function() {
+    return "Hello!";
+  }
+}
+```
+
+super关键字：指向自己的原型对象，即父类
+
+例如通过setPrototypeOf对一个对象设置原型对象，便可以在这个对象的内容通过super来访问父类的属性和函数
+
 
 ## 有关库的使用
 
