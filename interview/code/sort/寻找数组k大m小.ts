@@ -4,12 +4,14 @@ function quickSelect(nums: number[], k: number): number {
   if (len === 1) {
     return nums[0];
   }
+  // 快速选择类似快排，基于pivot进行
   // 随机选择一个基准值
   const pivot = nums[Math.floor(Math.random() * len)];
   // 小于基准值的元素
   const left = nums.filter((num) => num < pivot);
-  // 大于等于基准值的元素
+  // 大于等于基准值的元素，注意这里需要记录等于的
   const right = nums.filter((num) => num >= pivot);
+  // 根据k的大小，判断在左边还是右边
   if (k <= left.length) {
     // 第k大的元素在左侧
     return quickSelect(left, k);
@@ -17,7 +19,7 @@ function quickSelect(nums: number[], k: number): number {
     // 第k大的元素在右侧
     return quickSelect(right, k - (len - right.length));
   } else {
-    // 基准值就是第k大的元素
+    // 否则说明恰好在中间，基准值就是第k大的元素
     return pivot;
   }
 }
@@ -27,6 +29,7 @@ function findKthAndMth(nums: number[], k: number, m: number): number[] {
   if (k > len || m > len) {
     throw new Error('k or m is out of range.');
   }
+  // slice的效果是进行了拷贝，不会改变原数组
   const kth = quickSelect(nums.slice(), k);
   const mth = quickSelect(nums.slice(), len - m + 1);
   return [kth, mth];
