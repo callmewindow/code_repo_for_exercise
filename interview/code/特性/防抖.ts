@@ -36,28 +36,25 @@ function debounceI<T extends any[]>(
   immediate = false
 ): DebouncedFn<T> {
   let timerId: ReturnType<typeof setTimeout> | undefined;
-
   return function(this: any, ...args: T) {
     const context = this;
-
     const later = () => {
       timerId = undefined;
-
       if (!immediate) {
         fn.apply(context, args);
       }
     };
-
     const callNow = immediate && !timerId;
-
     if (timerId) {
       clearTimeout(timerId);
     }
-
     timerId = setTimeout(later, delay);
-
     if (callNow) {
       fn.apply(context, args);
     }
   };
 }
+
+// 不立刻执行，只需要每次清空计时器然后启动新定时
+// 立刻执行，可以将定时函数包装为later，内部会清空计时器并根据是否立刻执行来判断是否执行；
+// 进而每次都针对定时器和立刻执行同时判断情况，直接设立later的计时器和根据情况看是否直接执行

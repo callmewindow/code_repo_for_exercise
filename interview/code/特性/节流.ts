@@ -24,3 +24,5 @@ function throttle(fn: Function, delay: number) {
     }
   };
 }
+
+// 记录，return，判断时间差是否delay，已经超过则更新时间执行；否则晴空计时器，继续设立延时

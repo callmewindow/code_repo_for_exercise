@@ -10,7 +10,7 @@ function findTwo(nums:number[], target:number): number[]{
     const find = target - num;
     // num是新的，所以find一定更靠前
     if(numSet.has(find)) return [find,target];
-    else numSet.add(find);
+    else numSet.add(num);
   }
   return [];
 }

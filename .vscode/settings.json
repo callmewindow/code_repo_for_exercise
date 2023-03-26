@@ -18,7 +18,11 @@
   },
   "[html]": {
     "editor.insertSpaces": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 2
+  },
+  "[vue]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2
   },
   "[python]": {
     "editor.insertSpaces": true,
