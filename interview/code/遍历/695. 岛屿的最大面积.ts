@@ -4,16 +4,21 @@ function maxAreaOfIsland(grid: number[][]): number {
   const n = grid.length, m = grid[0].length;
   function destroyIsland(x: number, y: number): number {
     // 边界或0则退出
+    // console.log(x,y);
     if (x < 0 || x >= n || y < 0 || y >= m || grid[x][y] === 0) return 0;
+    // console.log(grid[x][y]);
+    grid[x][y] = 0; // 摧毁
     // 否则进行剩余岛屿的摧毁
-    return 1 + destroyIsland(x - 1, y) + destroyIsland(x + 1, y) + destroyIsland(x, y - 1), destroyIsland(x, y + 1);
+    return 1 + destroyIsland(x - 1, y) + destroyIsland(x + 1, y) + destroyIsland(x, y - 1) + destroyIsland(x, y + 1);
   }
   let maxArea = 0;
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < m; j++) {
       if (grid[i][j] === 1) {
         // 记录最大值
-        maxArea = Math.max(destroyIsland(i, j), maxArea);
+        const area = destroyIsland(i, j)
+        // console.log(area);
+        maxArea = Math.max(area, maxArea);
       }
     }
   }

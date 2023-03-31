@@ -57,13 +57,14 @@ const mainPromise = () => {
     })
 }
 
-// async await
-// async await实际上是generator和promise的语法糖
-// 在提供同步编程方式实现异步调用的基础上，同时满足对sleep函数语义化的支持
 async function wait(time: number) {
   await sleep2(time);
   timeout();
 }
+
+// async await
+// async await实际上是generator和promise的语法糖
+// 在提供同步编程方式实现异步调用的基础上，同时满足对sleep函数语义化的支持
 
 // 可以避免Promise的一连串.then.then.then，也不再需要递归，使用while(true)就可以实现循环
 function sleepAwait(duration: number) {

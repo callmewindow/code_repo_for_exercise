@@ -1,4 +1,4 @@
-function strIterator(str: string): CallableFunction {
+function strIterator(str: string): Function {
   let index = 0;
   const n = str.length;
   function strOutput(): string {
