@@ -67,7 +67,9 @@
 ### 成像快视
 
 成像快视项目是现阶段最能带给我成就感的项目，不只是因为他是一个百亿级的国家级项目，而是在这个项目的开发过程中我对自己的软件研发能力有了新一阶段的提高。
+
 在该项目中我通过学习优秀项目的架构设计，将模块化、组件化的思想应用到python客户端中，在开发过程中频繁使用工厂模式来复用代码，并利用数据链模式进行数据处理的过程的管理，同时利用pylint、cspell、日志库等内容来进行项目规范的维护。
+
 目前已实现了基于文件夹的任务数据监测、对五个子系统数十个配置项管理的大型配置管理系统、借助rabbitMQ实现任务检测与任务处理的进程并发，对大数据进行切片编号的并行处理，以及基于matplotlib的图示绘画等工作。
 该项目不只是对我架构设计和带队能力的一次实地考察，也让我对更多的技术以及设计模式的掌握有了一个深入了解的机会，并且后续该项目将作为航空领域的重点项目持续运维，我也十分有信心。
 
@@ -954,7 +956,7 @@ SCSS是CSS的预处理器，提供了许多功能，例如嵌套规则、变量�
 OJ系统是在我接触中科院项目之前最给我锻炼的项目
 该系统作为北航的核心系统，每年都会支撑几百人的上机学习和考试等事务，而我就是背后的技术人员
 在运维第四版的过程中我对服务端渲染项目有了进一步的学习，也对redis、cookie等缓存技术的利用有了更进一步的理解，并对实际上线系统可能遇到的XSS、DDoS攻击、服务器时间的利用等问题有了经验，并且通过对评测机分布式系统的管理，也让我对linux服务器的操作有了深入了解。
-对于第五版的开发，应该也是我第一次带队开发相对比较复杂的系统，通过vuetify组件库和tailwindcss样式表进行的UI设计，也是得益于vue框架，在架构设计上我仍然遵循了模块化、组件化的策略，并且将此前的web前端开发技术均进行了应用来确保系统的鲁棒性，包括但不限于：基于restful和bem规范进行接口和样式的管理，基于flex和网格布局进行自适应布局，基于token+路由+计算属性实现复杂权限管理，以及路由懒加载和防止用户频繁提交等性能上的优化策略
+对于第五版的开发，应该也是我第一次带队开发相对比较复杂的系统，通过 vuetify 组件库和 tailwindcss 样式表进行的UI设计，也是得益于vue框架，在架构设计上我仍然遵循了模块化、组件化的策略，并且将此前的web前端开发技术均进行了应用来确保系统的鲁棒性，包括但不限于：基于restful和bem规范进行接口和样式的管理，基于flex和网格布局进行自适应布局，基于token+路由+计算属性实现复杂权限管理，以及路由懒加载和防止用户频繁提交等性能上的优化策略
 OJ项目相当于是锻炼了我对于实际上线系统开发中需要注意问题的全面思考，以及对我过去web前端知识的一次考核。
 
 ### 第四版
@@ -1866,6 +1868,101 @@ uploadFile();
 4. P2P 方式上传
 
     使用 P2P 技术实现文件的分片上传，将文件分成若干个块，然后使用 P2P 技术将文件块上传到其他用户的客户端，其他客户端将收到的文件块上传到服务器上，服务器接收到所有块后进行合并。这种方式可以实现高效的文件上传和分发，但需要客户端进行相应的支持
+
+##### 涉及到的http头部字段
+
+Content-Type：指定上传文件的类型。例如，对于图片文件，Content-Type 可以设置为 image/png 或 image/jpeg 等。
+
+Content-Length：指定上传文件的大小，以字节为单位。在切片上传中，需要根据每个切片的大小累加计算出整个文件的大小，并设置 Content-Length 字段。
+
+Content-Disposition：指定上传文件的文件名。可以设置为 inline 或者 attachment。inline 表示在浏览器中显示，attachment 表示提示下载。
+
+Range：指定上传文件的起始位置和结束位置，以字节为单位。在切片上传中，可以使用 Range 字段指定每个切片的起始位置和结束位置。
+
+Accept-Ranges：指定服务器支持断点续传。在切片上传中，服务器需要返回 Accept-Ranges: bytes 字段，表示支持以字节为单位的范围请求。
+
+If-Match：用于条件请求，指定上传文件的 ETag 值。在切片上传中，可以使用 If-Match 字段指定上传的文件的 ETag 值，以保证上传的文件是最新的版本。
+
+If-Range：用于条件请求，指定上传文件的起始位置和结束位置。在切片上传中，可以使用 If-Range 字段指定上传文件的起始位置和结束位置，以保证上传的文件是最新的版本。
+
+Content-Range：指定上传文件的范围。在切片上传中，服务器需要返回 Content-Range 字段，指定上传文件的范围。
+
+
+一般也会使用一些自定字段来便于处理：
+
+```js
+const file = document.getElementById('file-input').files[0];
+
+const CHUNK_SIZE = 1024 * 1024; // 每个切片的大小（1MB）
+
+let startByte = 0;
+let endByte = CHUNK_SIZE;
+
+while (startByte < file.size) {
+  const chunk = file.slice(startByte, endByte); // 切片文件
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/upload', true);
+
+  xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+  xhr.setRequestHeader('X-File-Name', file.name);
+  xhr.setRequestHeader('X-File-Size', file.size);
+  xhr.setRequestHeader('X-Start-Byte', startByte);
+  xhr.setRequestHeader('X-End-Byte', endByte);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log('Uploaded ' + chunk.size + ' bytes.');
+    }
+  };
+
+  xhr.send(chunk);
+
+  startByte = endByte;
+  endByte = Math.min(endByte + CHUNK_SIZE, file.size);
+}
+```
+
+使用了如下的头部字段：
+
+Content-Type: 用于指定上传文件的 MIME 类型。
+X-File-Name: 用于指定上传文件的文件名。
+X-File-Size: 用于指定上传文件的大小。
+X-Start-Byte: 用于指定当前切片在文件中的起始字节位置。
+X-End-Byte: 用于指定当前切片在文件中的结束字节位置。
+同时，在服务端，我们使用了 HTTP Range 头部字段来实现文件的切片上传功能。
+
+基于规范头部字段请求
+
+```js
+async function uploadSlice(file, url, startByte, endByte) {
+  const headers = {
+    'Content-Type': 'application/octet-stream',
+    'Content-Range': `bytes ${startByte}-${endByte}/${file.size}`
+  };
+  const slice = file.slice(startByte, endByte + 1);
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers,
+    body: slice
+  });
+  return response;
+}
+
+async function uploadFile(file, url, chunkSize = 1024 * 1024) {
+  const sliceCount = Math.ceil(file.size / chunkSize);
+  let sliceIndex = 0;
+  for (let startByte = 0; startByte < file.size; startByte += chunkSize) {
+    const endByte = Math.min(startByte + chunkSize - 1, file.size - 1);
+    const response = await uploadSlice(file, url, startByte, endByte);
+    if (response.ok) {
+      sliceIndex++;
+    } else {
+      return response;
+    }
+  }
+  return response;
+}
+```
 
 #### 7. 文件浏览速度缓慢问题
 
